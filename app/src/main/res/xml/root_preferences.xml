@@ -1,0 +1,31 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/set_your_id_and_choose_where_to_show_the_wallpaper">
+
+        <EditTextPreference
+            app:key="Id"
+            app:title="@string/id"
+
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            app:defaultValue="00000000"
+            app:isPreferenceVisible="false"
+            app:key="api_key"
+            app:title="@string/api_key"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/where">
+
+        <SwitchPreferenceCompat
+            app:key="wallpaper"
+            app:title="@string/wallpaper" />
+
+        <SwitchPreferenceCompat
+            app:key="lockscreen"
+            app:title="@string/lockscreen" />
+
+    </PreferenceCategory>
+</PreferenceScreen>
