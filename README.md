@@ -12,12 +12,14 @@ This app has been tested with android 10, but it should work from android 7.0 an
 **Features**
 
 Start = start the service
-
 Stop = stop the service
-
 Update = update the view about your link
 
-**Important** Click update after changing the link number
+**Important**
+
+Click update after changing the link number
+
+Enable unrestricted data use and disable battery optimization from the app settings, otherwise the service will not work
 
 **Special thanks**
 
