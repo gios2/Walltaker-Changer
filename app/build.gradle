@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.gios.walltakerchanger"
-        minSdk 21
+        minSdk 24
         targetSdk 32
         versionCode 1
         versionName "0.1"
