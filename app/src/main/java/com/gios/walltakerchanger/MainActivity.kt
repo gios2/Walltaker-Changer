@@ -60,13 +60,14 @@ var response_type: String? = null
 var response_text: String? = null
 var online: Boolean = false
 const val verNr = "v0.1"
+var path="/data/user/0/com.gios.walltakerchanger/cache"
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         orientation()
         theme()
-
+        
         obtainWallpaper()
         image = findViewById(R.id.image)
         text = findViewById(R.id.textView)
@@ -80,12 +81,12 @@ class MainActivity : AppCompatActivity() {
         }
         stop.setOnClickListener {
             stopService(Intent(this, Service::class.java))
-            File(this.cacheDir.path).deleteRecursively()
+            File(path).deleteRecursively()
             stop()
 
         }
         update.setOnClickListener {
-            File(this.cacheDir.path).deleteRecursively()
+            File(path).deleteRecursively()
             text.text = ""
             image.setImageResource(0)
             println(id)

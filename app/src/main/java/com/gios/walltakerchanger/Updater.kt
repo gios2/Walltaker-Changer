@@ -11,6 +11,7 @@ import com.google.gson.GsonBuilder
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 import okhttp3.*
+import java.io.File
 import java.io.IOException
 
 class Updater {
@@ -68,6 +69,7 @@ class Updater {
                                 println("post_url: $post_url")
                                 if (post_url != lastUrl) {
 
+                                    File(path).deleteRecursively()
 
                                     val picasso = Picasso.Builder(context).build()
                                     val thread = HandlerThread(
