@@ -16,7 +16,7 @@ Stop = stop the service
 Update = update the view about your link
 
 **Important**
-
+The videos don't work (at least for the moment)
 Click update after changing the link number
 
 Enable unrestricted data use and disable battery optimization from the app settings, otherwise the service will not work. 
