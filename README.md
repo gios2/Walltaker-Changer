@@ -19,7 +19,7 @@ Update = update the view about your link
 The videos don't work (at least for the moment)
 Click update after changing the link number
 
-Enable background unrestricted data use and disable battery optimization from the app settings, otherwise the service will not work. 
+Enable unrestricted background data use and disable battery optimization from the app settings, otherwise the service will not work. 
 To do it you have to hold down the app icon, click app info, click mobile data & WLAN, activate data use without restrictions, go back and click battery, battery optimization, search for walltaker changer and set don't optimize
 
 **Special thanks**
