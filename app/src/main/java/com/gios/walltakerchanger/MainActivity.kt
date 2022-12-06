@@ -17,12 +17,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
+import com.bumptech.glide.Glide
 import com.google.gson.GsonBuilder
-import com.squareup.picasso.MemoryPolicy
-import com.squareup.picasso.NetworkPolicy
-import com.squareup.picasso.Picasso
 import okhttp3.*
-import java.io.File
 import java.io.IOException
 
 
@@ -59,15 +56,13 @@ var set_by: String? = null
 var response_type: String? = null
 var response_text: String? = null
 var online: Boolean = false
-const val verNr = "v0.1"
-var path="/data/user/0/com.gios.walltakerchanger/cache"
+const val verNr = "v0.3"
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         orientation()
         theme()
-        
         obtainWallpaper()
         image = findViewById(R.id.image)
         text = findViewById(R.id.textView)
@@ -76,17 +71,16 @@ class MainActivity : AppCompatActivity() {
         start = findViewById(R.id.start)
 
         start.setOnClickListener {
+            stopService(Intent(this, Service::class.java))
             startService(Intent(this, Service::class.java))
             start()
         }
         stop.setOnClickListener {
             stopService(Intent(this, Service::class.java))
-            File(path).deleteRecursively()
             stop()
 
         }
         update.setOnClickListener {
-            File(path).deleteRecursively()
             text.text = ""
             image.setImageResource(0)
             println(id)
@@ -148,11 +142,15 @@ class MainActivity : AppCompatActivity() {
                             val handler = Handler(Looper.getMainLooper())
                             handler.post {
                                 image.scaleType = ImageView.ScaleType.CENTER_INSIDE
-                                Picasso.get()
+                                /*Picasso.get()
                                     .load(post_url)
                                     .memoryPolicy(MemoryPolicy.NO_CACHE)
                                     .networkPolicy(NetworkPolicy.NO_CACHE)
                                     .noFade()
+                                    .into(image)*/
+                                Glide.with(this@MainActivity)
+                                    .load(post_url)
+                                    .fitCenter()
                                     .into(image)
                                 handler.removeCallbacksAndMessages(null)
 

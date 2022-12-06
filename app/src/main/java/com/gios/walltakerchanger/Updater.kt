@@ -3,17 +3,20 @@ package com.gios.walltakerchanger
 
 import android.app.WallpaperManager
 import android.content.Context
+import android.content.Context.WINDOW_SERVICE
 import android.content.SharedPreferences
-import android.os.HandlerThread
-import android.os.Process
+import android.graphics.Bitmap
+import android.util.DisplayMetrics
+import android.view.WindowManager
 import androidx.preference.PreferenceManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.FutureTarget
 import com.google.gson.GsonBuilder
-import com.squareup.picasso.MemoryPolicy
-import com.squareup.picasso.Picasso
 import okhttp3.*
-import java.io.File
 import java.io.IOException
 
+
+@Suppress("DEPRECATION")
 class Updater {
 
     companion object {
@@ -31,8 +34,6 @@ class Updater {
             setLock = sharedPreferences.getBoolean("lockscreen", false)
 
 
-
-
             val request = Request.Builder().url(linkUrl!!).addHeader("Walltaker-Changer", verNr)
                 .addHeader("User-Agent", "Walltaker-Changer/$verNr").build()
 
@@ -45,7 +46,7 @@ class Updater {
                 override fun onResponse(call: Call, response: Response) {
                     try {
                         val body = response.body()?.string()
-                        println("(Updater)Response: $body")
+                        //println("(Updater)Response: $body")
 
                         val gson = GsonBuilder().create()
                         val data = gson.fromJson(body, LinkData::class.java)
@@ -69,18 +70,31 @@ class Updater {
                                 println("post_url: $post_url")
                                 if (post_url != lastUrl) {
 
-                                    File(path).deleteRecursively()
-
+                                    /*
                                     val picasso = Picasso.Builder(context).build()
                                     val thread = HandlerThread(
                                         "ServiceStartArguments", Process.THREAD_PRIORITY_BACKGROUND
                                     )
                                     thread.start()
-
                                     val bitmap =
                                         picasso.load(post_url).memoryPolicy(MemoryPolicy.NO_CACHE)
                                             .noFade().get()
-                                    thread.quitSafely()
+                                    thread.quitSafely()*/
+
+                                    val displayMetrics = DisplayMetrics()
+                                    val windowsManager =
+                                        context.getSystemService(WINDOW_SERVICE) as WindowManager
+                                    windowsManager.defaultDisplay.getMetrics(displayMetrics)
+                                    val width = displayMetrics.widthPixels
+                                    val height = displayMetrics.heightPixels
+
+                                    val futureTarget: FutureTarget<Bitmap> = Glide.with(context)
+                                        .asBitmap()
+                                        .load(post_url)
+                                        .fitCenter()
+                                        .submit(width, height)
+                                    val bitmap = futureTarget.get()
+                                    Glide.with(context).clear(futureTarget)
 
                                     val wallpaperManager = WallpaperManager.getInstance(context)
 
@@ -99,13 +113,13 @@ class Updater {
                                 }
                                 lastUrl = data.post_url
                             }
-                            println(
-                                "Last is $lastUrl, post is $post_url" + if (lastUrl == post_url) {
-                                    " they are same"
+                            /*println(
+                                "last and post are " + if (lastUrl == post_url) {
+                                    "same"
                                 } else {
-                                    "they are different"
+                                    "different"
                                 }
-                            )
+                            )*/
 
                         }
 
@@ -115,8 +129,6 @@ class Updater {
                 }
             })
         }
-
-
     }
 }
 
