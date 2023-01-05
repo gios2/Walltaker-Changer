@@ -46,7 +46,6 @@ class Updater {
                 override fun onResponse(call: Call, response: Response) {
                     try {
                         val body = response.body()?.string()
-                        //println("(Updater)Response: $body")
 
                         val gson = GsonBuilder().create()
                         val data = gson.fromJson(body, LinkData::class.java)
@@ -67,19 +66,8 @@ class Updater {
                             response_text = data.response_text
                             online = data.online
                             if (post_url != null && !post_url.isNullOrEmpty()) {
-                                println("post_url: $post_url")
+                                //println("post_url: $post_url")
                                 if (post_url != lastUrl) {
-
-                                    /*
-                                    val picasso = Picasso.Builder(context).build()
-                                    val thread = HandlerThread(
-                                        "ServiceStartArguments", Process.THREAD_PRIORITY_BACKGROUND
-                                    )
-                                    thread.start()
-                                    val bitmap =
-                                        picasso.load(post_url).memoryPolicy(MemoryPolicy.NO_CACHE)
-                                            .noFade().get()
-                                    thread.quitSafely()*/
 
                                     val displayMetrics = DisplayMetrics()
                                     val windowsManager =
@@ -88,11 +76,9 @@ class Updater {
                                     val width = displayMetrics.widthPixels
                                     val height = displayMetrics.heightPixels
 
-                                    val futureTarget: FutureTarget<Bitmap> = Glide.with(context)
-                                        .asBitmap()
-                                        .load(post_url)
-                                        .fitCenter()
-                                        .submit(width, height)
+                                    val futureTarget: FutureTarget<Bitmap> =
+                                        Glide.with(context).asBitmap().load(post_url).fitCenter()
+                                            .submit(width, height)
                                     val bitmap = futureTarget.get()
                                     Glide.with(context).clear(futureTarget)
 
@@ -113,14 +99,6 @@ class Updater {
                                 }
                                 lastUrl = data.post_url
                             }
-                            /*println(
-                                "last and post are " + if (lastUrl == post_url) {
-                                    "same"
-                                } else {
-                                    "different"
-                                }
-                            )*/
-
                         }
 
                     } catch (e: Exception) {

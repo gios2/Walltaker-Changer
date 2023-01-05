@@ -3,11 +3,16 @@
 package com.gios.walltakerchanger
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.net.ConnectivityManager.*
+import android.net.Uri
 import android.os.*
+import android.os.PowerManager.WakeLock
+import android.provider.Settings
 import android.text.Html
 import android.view.Menu
 import android.view.MenuItem
@@ -21,6 +26,7 @@ import com.bumptech.glide.Glide
 import com.google.gson.GsonBuilder
 import okhttp3.*
 import java.io.IOException
+import kotlin.system.exitProcess
 
 
 @SuppressLint("StaticFieldLeak")
@@ -56,11 +62,18 @@ var set_by: String? = null
 var response_type: String? = null
 var response_text: String? = null
 var online: Boolean = false
-const val verNr = "v0.3"
+lateinit var wl: WakeLock
+const val verNr = "v0.4"
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val pm = getSystemService(POWER_SERVICE) as PowerManager
+        wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "WalltakerChanger:WAKEUP")
+        wl.acquire(10 * 60 * 1000L /*10 minutes*/)
+
+        ignoreBatteryOptimization()
         orientation()
         theme()
         obtainWallpaper()
@@ -71,12 +84,9 @@ class MainActivity : AppCompatActivity() {
         start = findViewById(R.id.start)
 
         start.setOnClickListener {
-            stopService(Intent(this, Service::class.java))
-            startService(Intent(this, Service::class.java))
             start()
         }
         stop.setOnClickListener {
-            stopService(Intent(this, Service::class.java))
             stop()
 
         }
@@ -142,16 +152,7 @@ class MainActivity : AppCompatActivity() {
                             val handler = Handler(Looper.getMainLooper())
                             handler.post {
                                 image.scaleType = ImageView.ScaleType.CENTER_INSIDE
-                                /*Picasso.get()
-                                    .load(post_url)
-                                    .memoryPolicy(MemoryPolicy.NO_CACHE)
-                                    .networkPolicy(NetworkPolicy.NO_CACHE)
-                                    .noFade()
-                                    .into(image)*/
-                                Glide.with(this@MainActivity)
-                                    .load(post_url)
-                                    .fitCenter()
-                                    .into(image)
+                                Glide.with(this@MainActivity).load(post_url).fitCenter().into(image)
                                 handler.removeCallbacksAndMessages(null)
 
                             }
@@ -184,11 +185,25 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("BatteryLife")
+    private fun ignoreBatteryOptimization() {
+        val intent = Intent()
+        val packageName = packageName
+        val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
+        if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+            intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+            intent.data = Uri.parse("package:$packageName")
+            startActivity(intent)
+        }
+    }
+
     private fun stop() {
         if (linkId!!.toInt() == 0) {
             Toast.makeText(this, "Set a id", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(this, "Stopping Walltaker task...", Toast.LENGTH_SHORT).show()
+            stopService(Intent(this, Service::class.java))
+
         }
     }
 
@@ -196,8 +211,8 @@ class MainActivity : AppCompatActivity() {
         if (linkId!!.toInt() == 0) {
             Toast.makeText(this, "Set a id", Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(this, "Starting Walltaker task...", Toast.LENGTH_SHORT).show()
-            Updater.updateWallpaper(this)
+            startService(Intent(this, Service::class.java))
+            exitProcess(-1)
         }
     }
 
@@ -218,7 +233,6 @@ class MainActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
-
     }
 
     private fun settings() {
@@ -226,6 +240,10 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    override fun onStop() {
+        super.onStop()
+        wl.release()
+    }
 }
 
 class LinkData(
