@@ -212,6 +212,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Set a id", Toast.LENGTH_SHORT).show()
         } else {
             startService(Intent(this, Service::class.java))
+            finishAndRemoveTask()
             exitProcess(-1)
         }
     }
