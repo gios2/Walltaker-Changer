@@ -11,107 +11,120 @@
         android:id="@+id/image"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:contentDescription="@string/todo"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
+        app:layout_constraintStart_toStartOf="@+id/constraintLayout"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="spread"
         tools:ignore="ImageContrastCheck"
         tools:srcCompat="@tools:sample/avatars" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:gravity="start"
-        android:scrollbarAlwaysDrawHorizontalTrack="false"
-        android:scrollbarAlwaysDrawVerticalTrack="true"
-        android:scrollbars="vertical"
-        android:textAlignment="gravity"
-        android:textAllCaps="false"
-        android:textSize="14sp"
-        android:verticalScrollbarPosition="right"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/constraintLayout2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image"
-        tools:text="text" />
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout2"
-        android:layout_width="160dp"
-        android:layout_height="350dp"
+        android:id="@+id/constraintLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <Button
-            android:id="@+id/start"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:text="@string/start"
-            app:layout_constraintBottom_toTopOf="@+id/update"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView3"
-            app:layout_constraintVertical_bias="0.5" />
-
-        <Button
-            android:id="@+id/stop"
-            android:layout_width="100dp"
-            android:layout_height="48dp"
-            android:text="@string/stop"
-            app:layout_constraintBottom_toTopOf="@+id/panic"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/update"
-            app:layout_constraintVertical_bias="0.5" />
-
-        <Button
-            android:id="@+id/update"
-            android:layout_width="98dp"
-            android:layout_height="48dp"
-            android:text="@string/update"
-            app:layout_constraintBottom_toTopOf="@+id/stop"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/start"
-            app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
-            android:id="@+id/textView3"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:text="@string/the_app_will_close_when_start_is_pressed"
-            android:textAlignment="center"
-            android:textSize="11sp"
-            app:layout_constraintBottom_toTopOf="@+id/start"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            android:id="@+id/textView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="start"
+            android:scrollbarAlwaysDrawHorizontalTrack="false"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:scrollbars="vertical"
+            android:textAlignment="gravity"
+            android:textAllCaps="false"
+            android:textSize="14sp"
+            android:verticalScrollbarPosition="right"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/constraintLayout2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5" />
+            app:layout_constraintVertical_bias="0.5"
+            tools:text="text" />
 
-        <Button
-            android:id="@+id/panic"
-            android:layout_width="0dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout2"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:backgroundTint="@color/red"
-            android:text="@string/panic"
+            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/stop"
-            app:layout_constraintVertical_bias="0.5" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <Button
+                android:id="@+id/start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/start"
+                app:layout_constraintEnd_toStartOf="@+id/stop"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+            <Button
+                android:id="@+id/stop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/stop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/start"
+                app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+            <Button
+                android:id="@+id/update"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/update"
+                app:layout_constraintBottom_toTopOf="@+id/panic"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.496"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/stop" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/the_app_will_close_when_start_is_pressed"
+                android:textAlignment="center"
+                android:textSize="11sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/panic"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="@color/red"
+                android:text="@string/panic"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.appbar.AppBarLayout
