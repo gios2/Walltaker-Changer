@@ -1,55 +1,48 @@
 package com.gios.walltakerchanger
 
 
+import android.annotation.SuppressLint
 import android.app.WallpaperManager
 import android.content.Context
 import android.content.Context.WINDOW_SERVICE
 import android.content.SharedPreferences
 import android.graphics.Bitmap
+import android.os.PowerManager
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import androidx.preference.PreferenceManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
+import com.github.kittinunf.fuel.httpGet
 import com.google.gson.GsonBuilder
-import okhttp3.*
-import java.io.IOException
 
 
 @Suppress("DEPRECATION")
 class Updater {
 
     companion object {
-        var lastUrl = ""
+        private var lastUrl = ""
 
+        @SuppressLint("WakelockTimeout")
         fun updateWallpaper(context: Context) {
+
+            val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+
+            wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "WalltakerChanger:WAKEUP")
+            wl.acquire()
             val sharedPreferences: SharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(context)
-
 
             linkId = sharedPreferences.getString("Id", "0")
             linkUrl = "https://walltaker.joi.how/api/links/$linkId.json"
 
             setHome = sharedPreferences.getBoolean("wallpaper", false)
             setLock = sharedPreferences.getBoolean("lockscreen", false)
-
-
-            val request = Request.Builder().url(linkUrl!!).addHeader("Walltaker-Changer", verNr)
-                .addHeader("User-Agent", "Walltaker-Changer/$verNr").build()
-
-            val client = OkHttpClient()
-            client.newCall(request).enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    println("error on json request: ${e.message}")
-                }
-
-                override fun onResponse(call: Call, response: Response) {
-                    try {
-                        val body = response.body()?.string()
-
+            linkUrl!!.httpGet().header("User-Agent" to "Walltaker-Changer/$verNr")
+                .responseString { _, response, result ->
+                    if (response.statusCode == 200) {
                         val gson = GsonBuilder().create()
-                        val data = gson.fromJson(body, LinkData::class.java)
-
+                        val data = gson.fromJson(result.get(), LinkData::class.java)
                         if (data != null) {
                             id = data.id
                             expires = data.expires
@@ -65,8 +58,8 @@ class Updater {
                             response_type = data.response_type
                             response_text = data.response_text
                             online = data.online
+
                             if (post_url != null && !post_url.isNullOrEmpty()) {
-                                //println("post_url: $post_url")
                                 if (post_url != lastUrl) {
 
                                     val displayMetrics = DisplayMetrics()
@@ -85,29 +78,27 @@ class Updater {
                                     val wallpaperManager = WallpaperManager.getInstance(context)
 
                                     if (setHome) {
-                                        println("setting home")
+                                        println("Setting home")
                                         wallpaperManager.setBitmap(
                                             bitmap, null, true, WallpaperManager.FLAG_SYSTEM
                                         )
                                     }
                                     if (setLock) {
-                                        println("setting lock")
+                                        println("Setting lock")
                                         wallpaperManager.setBitmap(
                                             bitmap, null, true, WallpaperManager.FLAG_LOCK
                                         )
                                     }
+
                                 }
                                 lastUrl = data.post_url
                             }
                         }
-
-                    } catch (e: Exception) {
-                        println("error while getting Image: ${e.message}")
+                    } else {
+                        println("error on json request: ${response.statusCode}")
                     }
                 }
-            })
+            wl.release()
         }
     }
 }
-
-

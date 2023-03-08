@@ -19,15 +19,13 @@ class Service : Service() {
     override fun onCreate() {
         Toast.makeText(this, "Walltaker Changer Service Created", Toast.LENGTH_SHORT).show()
         Log.d(TAG, "onCreate")
-        val delay = 5000 // delay for 5 sec.
         val period = 10000 // repeat every 10 sec.
         timer = Timer()
         timer!!.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
-                //println("done")
                 updateWallpaper(this@Service)
             }
-        }.also { task = it }, delay.toLong(), period.toLong())
+        }.also { task = it }, 0, period.toLong())
     }
 
     override fun stopService(name: Intent?): Boolean {

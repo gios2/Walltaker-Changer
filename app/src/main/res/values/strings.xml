@@ -34,5 +34,6 @@
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="the_app_will_close_when_start_is_pressed">The app will close when start is pressed</string>
+    <string name="panic">Panic</string>
 
 </resources>
