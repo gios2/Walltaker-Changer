@@ -63,7 +63,7 @@ var response_type: String? = null
 var response_text: String? = null
 var online: Boolean = false
 lateinit var wl: WakeLock
-const val verNr = "v0.5.1"
+const val verNr = "v0.6"
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

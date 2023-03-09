@@ -28,7 +28,7 @@ class Updater {
 
             val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
 
-            wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "WalltakerChanger:WAKEUP")
+            wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "WalltakerChanger:WAKEUP")
             wl.acquire()
             val sharedPreferences: SharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(context)
