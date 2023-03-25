@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import com.gios.walltakerchanger.Updater.Companion.updateWallpaper
 import java.util.*
+import kotlin.concurrent.scheduleAtFixedRate
 
 
 class Service : Service() {
@@ -19,14 +20,12 @@ class Service : Service() {
     override fun onCreate() {
         Toast.makeText(this, "Walltaker Changer Service Created", Toast.LENGTH_SHORT).show()
         Log.d(TAG, "onCreate")
-        val period = 10000 // repeat every 10 sec.
         timer = Timer()
-        timer!!.scheduleAtFixedRate(object : TimerTask() {
-            override fun run() {
-                updateWallpaper(this@Service)
-            }
-        }.also { task = it }, 0, period.toLong())
+        timer!!.scheduleAtFixedRate(delay = 0, period = 10000L) {
+            updateWallpaper(this@Service)
+        }
     }
+
 
     override fun stopService(name: Intent?): Boolean {
         timer!!.cancel()

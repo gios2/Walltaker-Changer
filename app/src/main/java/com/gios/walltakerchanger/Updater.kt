@@ -1,7 +1,6 @@
 package com.gios.walltakerchanger
 
 
-import android.annotation.SuppressLint
 import android.app.WallpaperManager
 import android.content.Context
 import android.content.Context.WINDOW_SERVICE
@@ -23,13 +22,12 @@ class Updater {
     companion object {
         private var lastUrl = ""
 
-        @SuppressLint("WakelockTimeout")
         fun updateWallpaper(context: Context) {
 
             val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
 
             wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "WalltakerChanger:WAKEUP")
-            wl.acquire()
+            wl.acquire(10 * 60 * 1000L /*10 minutes*/)
             val sharedPreferences: SharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(context)
 

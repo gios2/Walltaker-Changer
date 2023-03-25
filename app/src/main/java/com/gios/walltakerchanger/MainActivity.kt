@@ -63,7 +63,7 @@ var response_type: String? = null
 var response_text: String? = null
 var online: Boolean = false
 lateinit var wl: WakeLock
-const val verNr = "v0.6"
+const val verNr = "v0.6.1"
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -131,12 +131,13 @@ class MainActivity : AppCompatActivity() {
                         response_type = data.response_type
                         response_text = data.response_text
                         online = data.online
-                        if (post_description!="")
-                        {text.text =
-                            "You are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe post description is $post_description\n\nThe link terms are: $terms\n\nThe blacklist tags are:$blacklist"
-                                    }
-                        else{text.text =
-                            "You are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe link terms are: $terms\n\nThe blacklist tags are:$blacklist"}
+                        if (post_description != "") {
+                            text.text =
+                                "You are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe post description is $post_description\n\nThe link terms are: $terms\n\nThe blacklist tags are:$blacklist"
+                        } else {
+                            text.text =
+                                "You are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe link terms are: $terms\n\nThe blacklist tags are:$blacklist"
+                        }
                         println(post_url)
                         if (post_url != null) {
                             val handler = Handler(Looper.getMainLooper())
