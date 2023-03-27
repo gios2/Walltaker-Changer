@@ -3,9 +3,12 @@
 package com.gios.walltakerchanger
 
 import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.app.WallpaperManager
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
@@ -63,9 +66,12 @@ var response_type: String? = null
 var response_text: String? = null
 var online: Boolean = false
 lateinit var wl: WakeLock
-const val verNr = "v0.6.1"
+const val verNr = "v1.0.0"
+ var receiver: BroadcastReceiver? = null
 
 class MainActivity : AppCompatActivity() {
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -73,6 +79,7 @@ class MainActivity : AppCompatActivity() {
         orientation()
         theme()
         obtainWallpaper()
+        configureReceiver()
 
         image = findViewById(R.id.image)
         text = findViewById(R.id.textView)
@@ -191,6 +198,12 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Set a id", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(this, "Stopping Walltaker task...", Toast.LENGTH_SHORT).show()
+            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val intent = Intent(this, BroadcastReceiver::class.java)
+            val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
+            alarmManager.cancel(pendingIntent);
+
+            unregisterReceiver(receiver)
             stopService(Intent(this, Service::class.java))
             exitProcess(-1)
         }
@@ -199,6 +212,13 @@ class MainActivity : AppCompatActivity() {
     private fun panic() {
         stopService(Intent(this, Service::class.java))
         val wallpaperManager = WallpaperManager.getInstance(this)
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(this, BroadcastReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
+        alarmManager.cancel(pendingIntent);
+
+        unregisterReceiver(receiver)
+
         wallpaperManager.clear()
         finishAndRemoveTask()
         exitProcess(-1)
@@ -209,6 +229,15 @@ class MainActivity : AppCompatActivity() {
         if (linkId!!.toInt() == 0) {
             Toast.makeText(this, "Set a id", Toast.LENGTH_SHORT).show()
         } else {
+            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val intent = Intent(this, BroadcastReceiver::class.java)
+            val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
+
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis() +1000,
+                pendingIntent
+            )
             startService(Intent(this, Service::class.java))
             finishAndRemoveTask()
             exitProcess(-1)
@@ -237,6 +266,12 @@ class MainActivity : AppCompatActivity() {
     private fun settings() {
         val intent = Intent(applicationContext, SettingsActivity::class.java)
         startActivity(intent)
+    }
+    private fun configureReceiver() {
+        val filter = IntentFilter()
+        filter.addAction("com.gios.walltakerchanger")
+        receiver = BroadcastReceiver()
+        registerReceiver(receiver, filter)
     }
 }
 

@@ -1,35 +1,41 @@
+
 package com.gios.walltakerchanger
 
+
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.app.Service
+import android.content.BroadcastReceiver
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
-import com.gios.walltakerchanger.Updater.Companion.updateWallpaper
-import java.util.*
-import kotlin.concurrent.scheduleAtFixedRate
 
 
 class Service : Service() {
-    private var timer: Timer? = null
-    private var task: TimerTask? = null
+    private var alarmManager: AlarmManager? = null
+    private var alarmIntent: PendingIntent? = null
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
 
     override fun onCreate() {
         Toast.makeText(this, "Walltaker Changer Service Created", Toast.LENGTH_SHORT).show()
-        Log.d(TAG, "onCreate")
-        timer = Timer()
-        timer!!.scheduleAtFixedRate(delay = 0, period = 10000L) {
-            updateWallpaper(this@Service)
-        }
+        alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        val intent = Intent(this, BroadcastReceiver::class.java)
+        alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
+        setAlarm()
+    }
+    private fun setAlarm() {
+        Log.d(TAG, "setAlarm")
+        alarmManager!!.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            System.currentTimeMillis() + 10000,
+            alarmIntent
+        )
     }
 
-
     override fun stopService(name: Intent?): Boolean {
-        timer!!.cancel()
-        task!!.cancel()
         return super.stopService(name)
     }
 
@@ -38,8 +44,7 @@ class Service : Service() {
     }
 
     override fun onDestroy() {
-        timer!!.cancel()
-        task!!.cancel()
         Log.i(TAG, "onCreate() , service stopped...")
+        unregisterReceiver(receiver)
     }
 }
