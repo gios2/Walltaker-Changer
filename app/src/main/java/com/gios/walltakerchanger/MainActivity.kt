@@ -66,7 +66,7 @@ var response_type: String? = null
 var response_text: String? = null
 var online: Boolean = false
 lateinit var wl: WakeLock
-const val verNr = "v1.0.0"
+const val verNr = "v1.0.1"
  var receiver: BroadcastReceiver? = null
 
 class MainActivity : AppCompatActivity() {

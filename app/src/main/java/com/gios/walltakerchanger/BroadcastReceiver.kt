@@ -13,7 +13,7 @@ class BroadcastReceiver : BroadcastReceiver() {
 
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intents = Intent(context, com.gios.walltakerchanger.BroadcastReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(context, 0, intents, 0)
+        val pendingIntent = PendingIntent.getBroadcast(context, 0, intents, PendingIntent.FLAG_IMMUTABLE)
 
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,

@@ -23,7 +23,7 @@ class Service : Service() {
         Toast.makeText(this, "Walltaker Changer Service Created", Toast.LENGTH_SHORT).show()
         alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, BroadcastReceiver::class.java)
-        alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
+        alarmIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         setAlarm()
     }
     private fun setAlarm() {
