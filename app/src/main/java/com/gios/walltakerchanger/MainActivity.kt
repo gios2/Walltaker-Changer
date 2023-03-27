@@ -200,8 +200,8 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Stopping Walltaker task...", Toast.LENGTH_SHORT).show()
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             val intent = Intent(this, BroadcastReceiver::class.java)
-            val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
-            alarmManager.cancel(pendingIntent);
+            val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            alarmManager.cancel(pendingIntent)
 
             unregisterReceiver(receiver)
             stopService(Intent(this, Service::class.java))
@@ -214,8 +214,8 @@ class MainActivity : AppCompatActivity() {
         val wallpaperManager = WallpaperManager.getInstance(this)
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, BroadcastReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
-        alarmManager.cancel(pendingIntent);
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+        alarmManager.cancel(pendingIntent)
 
         unregisterReceiver(receiver)
 
@@ -231,7 +231,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             val intent = Intent(this, BroadcastReceiver::class.java)
-            val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
+            val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
