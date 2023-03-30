@@ -6,18 +6,26 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 
+
 class BroadcastReceiver : BroadcastReceiver() {
-    override fun onReceive(context: Context?, intent: Intent?) {
+    @Suppress("DEPRECATION")
+    override fun onReceive(context: Context, intent: Intent?) {
 
-        Updater.updateWallpaper(context!!)
-
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intents = Intent(context, com.gios.walltakerchanger.BroadcastReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(context, 0, intents, PendingIntent.FLAG_IMMUTABLE)
+        Updater.update(context)
+        val alarmManager =
+            context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intents =
+            Intent(context, com.gios.walltakerchanger.BroadcastReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            0,
+            intents,
+            PendingIntent.FLAG_IMMUTABLE
+        )
 
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
-            System.currentTimeMillis() +10000,
+            System.currentTimeMillis() + 10000,
             pendingIntent
         )
     }

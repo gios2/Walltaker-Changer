@@ -2,8 +2,6 @@
     <string name="app_name">Walltaker Changer</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
 
     <string name="set_your_id_and_choose_where_to_show_the_wallpaper">Set your Id and choose where to show the wallpaper</string>
     <string name="wallpaper">Wallpaper</string>
@@ -20,19 +18,10 @@
     <string name="update">Update</string>
 
     <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
 
     <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
 
     <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="the_app_will_close_when_start_is_pressed">The app will close when start is pressed</string>
     <string name="panic">Panic</string>
 

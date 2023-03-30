@@ -1,5 +1,4 @@
 @file:Suppress("DEPRECATION")
-
 package com.gios.walltakerchanger
 
 import android.annotation.SuppressLint
@@ -66,8 +65,8 @@ var response_type: String? = null
 var response_text: String? = null
 var online: Boolean = false
 lateinit var wl: WakeLock
-const val verNr = "v1.0.1"
- var receiver: BroadcastReceiver? = null
+const val verNr = "v1.0.2"
+var receiver: BroadcastReceiver? = null
 
 class MainActivity : AppCompatActivity() {
 
@@ -202,10 +201,10 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, BroadcastReceiver::class.java)
             val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             alarmManager.cancel(pendingIntent)
-
             unregisterReceiver(receiver)
             stopService(Intent(this, Service::class.java))
-            exitProcess(-1)
+            finishAndRemoveTask()
+            exitProcess(0)
         }
     }
 
@@ -216,12 +215,10 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, BroadcastReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         alarmManager.cancel(pendingIntent)
-
         unregisterReceiver(receiver)
-
         wallpaperManager.clear()
         finishAndRemoveTask()
-        exitProcess(-1)
+        exitProcess(0)
     }
 
 
@@ -240,7 +237,7 @@ class MainActivity : AppCompatActivity() {
             )
             startService(Intent(this, Service::class.java))
             finishAndRemoveTask()
-            exitProcess(-1)
+            exitProcess(0)
         }
     }
 
