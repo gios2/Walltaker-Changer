@@ -4,7 +4,6 @@
     <!-- Strings used for fragments for navigation -->
 
     <string name="set_your_id_and_choose_where_to_show_the_wallpaper">Set your Id and choose where to show the wallpaper</string>
-    <string name="wallpaper">Wallpaper</string>
     <string name="lockscreen">Lockscreen</string>
     <string name="api_key">API key</string>
     <string name="id">Id</string>
@@ -14,7 +13,6 @@
     <string name="start">start</string>
     <string name="stop">stop</string>
     <string name="todo">TODO</string>
-    <string name="where">Where to set</string>
     <string name="update">Update</string>
 
     <!-- Preference Titles -->

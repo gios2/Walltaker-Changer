@@ -8,7 +8,6 @@ import android.content.Intent
 
 
 class BroadcastReceiver : BroadcastReceiver() {
-    @Suppress("DEPRECATION")
     override fun onReceive(context: Context, intent: Intent?) {
 
         Updater.update(context)

@@ -2,30 +2,43 @@
 
     <PreferenceCategory app:title="@string/set_your_id_and_choose_where_to_show_the_wallpaper">
 
-        <EditTextPreference
-            app:key="Id"
-            app:title="@string/id"
+        <PreferenceCategory app:title="Single mode">
+            <EditTextPreference
+                app:key="id"
+                app:title="@string/id"
+                app:useSimpleSummaryProvider="true" />
 
-            app:useSimpleSummaryProvider="true" />
-
-        <EditTextPreference
-            app:defaultValue="00000000"
-            app:isPreferenceVisible="false"
-            app:key="api_key"
-            app:title="@string/api_key"
-            app:useSimpleSummaryProvider="true" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/where">
-
+            <EditTextPreference
+                app:defaultValue="00000000"
+                app:isPreferenceVisible="false"
+                app:key="api_key"
+                app:title="@string/api_key"
+                app:useSimpleSummaryProvider="true" />
+        </PreferenceCategory>
         <SwitchPreferenceCompat
             app:key="wallpaper"
-            app:title="@string/wallpaper" />
+            app:title="Homescreen" />
 
         <SwitchPreferenceCompat
             app:key="lockscreen"
             app:title="@string/lockscreen" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Multi mode">
+        <SwitchPreferenceCompat
+            app:key="multimode"
+            app:title="Enable multi mode" />
+        <EditTextPreference
+            app:key="IdHome"
+            app:title="Homescreen link Id"
+
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:key="IdLock"
+            app:title="Lockscreen link Id"
+
+            app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 </PreferenceScreen>

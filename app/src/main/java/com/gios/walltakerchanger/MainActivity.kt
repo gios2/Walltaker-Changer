@@ -1,4 +1,5 @@
 @file:Suppress("DEPRECATION")
+
 package com.gios.walltakerchanger
 
 import android.annotation.SuppressLint
@@ -20,6 +21,7 @@ import android.text.Html
 import android.text.method.ScrollingMovementMethod
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
@@ -29,10 +31,16 @@ import com.google.gson.GsonBuilder
 import kotlin.system.exitProcess
 
 @SuppressLint("StaticFieldLeak")
-lateinit var image: ImageView
+lateinit var imageHome: ImageView
 
 @SuppressLint("StaticFieldLeak")
-lateinit var text: TextView
+lateinit var imageLock: ImageView
+
+@SuppressLint("StaticFieldLeak")
+lateinit var textHome: TextView
+
+@SuppressLint("StaticFieldLeak")
+lateinit var textLock: TextView
 
 @SuppressLint("StaticFieldLeak")
 lateinit var panic: Button
@@ -46,27 +54,39 @@ lateinit var stop: Button
 @SuppressLint("StaticFieldLeak")
 lateinit var update: Button
 
-var linkId: String? = null
+@SuppressLint("StaticFieldLeak")
+lateinit var div: View
+
 var linkUrl: String? = null
+var linkUrlHome: String? = null
+var linkUrlLock: String? = null
+var linkId: String? = null
+var linkIdHome: String? = null
+var linkIdLock: String? = null
 var setHome: Boolean = false
 var setLock: Boolean = false
 var id: String? = null
-var expires: String? = null
+
+// --Commented out by Inspection (06/07/2023 01:25):var expires: String? = null
 var username: String? = null
 var terms: String? = null
 var blacklist: String? = null
 var post_url: String? = null
+var post_url_home: String? = null
+var post_url_lock: String? = null
 var post_thumbnail_url: String? = null
 var post_description: String? = null
-var created_at: String? = null
+
+// --Commented out by Inspection (06/07/2023 01:25):var created_at: String? = null
 var updated_at: String? = null
 var set_by: String? = null
 var response_type: String? = null
 var response_text: String? = null
-var online: Boolean = false
+
+// --Commented out by Inspection (06/07/2023 01:25):var online: Boolean = false
 lateinit var wl: WakeLock
-const val verNr = "v1.0.2"
 var receiver: BroadcastReceiver? = null
+var multiMode = false
 
 class MainActivity : AppCompatActivity() {
 
@@ -80,14 +100,18 @@ class MainActivity : AppCompatActivity() {
         obtainWallpaper()
         configureReceiver()
 
-        image = findViewById(R.id.image)
-        text = findViewById(R.id.textView)
+        div = findViewById(R.id.divider)
+        imageHome = findViewById(R.id.imageHome)
+        textHome = findViewById(R.id.textHome)
+        imageLock = findViewById(R.id.imageLock)
+        textLock = findViewById(R.id.textLock)
+        textHome.movementMethod = ScrollingMovementMethod()
+        textLock.movementMethod = ScrollingMovementMethod()
         stop = findViewById(R.id.stop)
         panic = findViewById(R.id.panic)
         update = findViewById(R.id.update)
         start = findViewById(R.id.start)
-        text.movementMethod = ScrollingMovementMethod()
-
+        reset()
         start.setOnClickListener {
             start()
         }
@@ -98,77 +122,202 @@ class MainActivity : AppCompatActivity() {
             panic()
         }
         update.setOnClickListener {
-            text.text = ""
-            image.setImageResource(0)
-            println(id)
+            reset()
+            obtainWallpaper()
+            reset()
             obtainWallpaper()
         }
     }
 
+    private fun reset() {
+        if (multiMode) {
+            imageHome.visibility = View.GONE
+            imageLock.visibility = View.GONE
+            div.visibility = View.GONE
+            textHome.text = ""
+            imageHome.setImageResource(0)
+            textLock.text = ""
+            imageLock.setImageResource(0)
+            imageHome.visibility = View.VISIBLE
+            imageLock.visibility = View.VISIBLE
+            div.visibility = View.VISIBLE
+            textLock.visibility = View.VISIBLE
+
+        } else {
+            imageHome.visibility = View.GONE
+            imageLock.visibility = View.GONE
+            textLock.visibility = View.GONE
+            div.visibility = View.GONE
+            textHome.text = ""
+            imageHome.setImageResource(0)
+            imageHome.visibility = View.VISIBLE
+        }
+    }
 
     @SuppressLint("SetTextI18n")
     private fun obtainWallpaper() {
+
+
         val sharedPreferences: SharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(this)
 
-        linkId = sharedPreferences.getString("Id", "0")
+        multiMode = sharedPreferences.getBoolean("multimode", false)
+        linkId = sharedPreferences.getString("id", "0")
         linkUrl = "https://walltaker.joi.how/api/links/$linkId.json"
+        linkIdHome = sharedPreferences.getString("IdHome", "0")
+        linkUrlHome = "https://walltaker.joi.how/api/links/$linkIdHome.json"
+        linkIdLock = sharedPreferences.getString("IdLock", "0")
+        linkUrlLock = "https://walltaker.joi.how/api/links/$linkIdLock.json"
+        println(linkId)
+        runOnUiThread {
+            if (multiMode) {
+                linkUrlHome!!.httpGet().header("User-Agent" to "Walltaker-Changer/")
+                    .responseString { _, response, result ->
+                        if (response.statusCode == 200) {
+                            val gson = GsonBuilder().create()
+                            val data = gson.fromJson(result.get(), LinkData::class.java)
+                            post_url_home = null
+                            if (data != null) {
+                                id = data.id
+                                //expires = data.expires
+                                username = data.username
+                                terms = data.terms
+                                blacklist = data.blacklist
+                                post_url_home = data.post_url
+                                post_thumbnail_url = data.post_thumbnail_url
+                                post_description = data.post_description
+                                //created_at = data.created_at
+                                updated_at = data.updated_at
+                                set_by = data.set_by
+                                response_type = data.response_type
+                                response_text = data.response_text
+                                //online = data.online
+                                if (post_description != "") {
+                                    textHome.text =
+                                        "HomeScreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe post description is $post_description\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                } else {
+                                    textHome.text =
+                                        "HomeScreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                }
+                                println(post_url_home)
+                                if (post_url_home != null) {
+                                    val handler = Handler(Looper.getMainLooper())
+                                    handler.post {
+                                        imageHome.scaleType = ImageView.ScaleType.CENTER_INSIDE
+                                        Glide.with(this@MainActivity).load(post_url_home)
+                                            .fitCenter()
+                                            .into(imageHome)
+                                        handler.removeCallbacksAndMessages(null)
+                                    }
+                                }
 
-        linkUrl!!.httpGet().header("User-Agent" to "Walltaker-Changer/$verNr")
-            .responseString { _, response, result ->
 
-                if (response.statusCode == 200) {
-                    val gson = GsonBuilder().create()
-                    val data = gson.fromJson(result.get(), LinkData::class.java)
-                    post_url = null
-
-                    if (data != null) {
-                        id = data.id
-                        expires = data.expires
-                        username = data.username
-                        terms = data.terms
-                        blacklist = data.blacklist
-                        post_url = data.post_url
-                        post_thumbnail_url = data.post_thumbnail_url
-                        post_description = data.post_description
-                        created_at = data.created_at
-                        updated_at = data.updated_at
-                        set_by = data.set_by
-                        response_type = data.response_type
-                        response_text = data.response_text
-                        online = data.online
-                        if (post_description != "") {
-                            text.text =
-                                "You are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe post description is $post_description\n\nThe link terms are: $terms\n\nThe blacklist tags are:$blacklist"
-                        } else {
-                            text.text =
-                                "You are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe link terms are: $terms\n\nThe blacklist tags are:$blacklist"
+                            }
                         }
-                        println(post_url)
-                        if (post_url != null) {
-                            val handler = Handler(Looper.getMainLooper())
-                            handler.post {
-                                image.scaleType = ImageView.ScaleType.CENTER_INSIDE
-                                Glide.with(this@MainActivity).load(post_url).fitCenter().into(image)
-                                handler.removeCallbacksAndMessages(null)
+                        linkUrlLock!!.httpGet().header("User-Agent" to "Walltaker-Changer/")
+                            .responseString { _, response2, result2 ->
+                                if (response2.statusCode == 200) {
+                                    val gson = GsonBuilder().create()
+                                    val data = gson.fromJson(result2.get(), LinkData::class.java)
+                                    post_url_lock = null
+                                    if (data != null) {
+                                        id = data.id
+                                        //expires = data.expires
+                                        username = data.username
+                                        terms = data.terms
+                                        blacklist = data.blacklist
+                                        post_url_lock = data.post_url
+                                        post_thumbnail_url = data.post_thumbnail_url
+                                        post_description = data.post_description
+                                        //created_at = data.created_at
+                                        updated_at = data.updated_at
+                                        set_by = data.set_by
+                                        response_type = data.response_type
+                                        response_text = data.response_text
+                                        //online = data.online
+                                        if (post_description != "") {
+                                            textLock.text =
+                                                "Lockscreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe post description is $post_description\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                        } else {
+                                            textLock.text =
+                                                "Lockscreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                        }
+                                        println(post_url_lock)
+                                        if (post_url_lock != null) {
+                                            val handler = Handler(Looper.getMainLooper())
+                                            handler.post {
+                                                imageHome.scaleType =
+                                                    ImageView.ScaleType.CENTER_INSIDE
+                                                Glide.with(this@MainActivity).load(post_url_lock)
+                                                    .fitCenter()
+                                                    .into(imageLock)
+                                                handler.removeCallbacksAndMessages(null)
+                                            }
+                                        }
+
+
+                                    }
+                                }
+                            }
+                    }
+
+            } else {
+                linkUrl!!.httpGet().header("User-Agent" to "Walltaker-Changer/")
+                    .responseString { _, response, result ->
+                        if (response.statusCode == 200) {
+                            val gson = GsonBuilder().create()
+                            val data = gson.fromJson(result.get(), LinkData::class.java)
+                            post_url = null
+                            if (data != null) {
+                                id = data.id
+                                //expires = data.expires
+                                username = data.username
+                                terms = data.terms
+                                blacklist = data.blacklist
+                                post_url = data.post_url
+                                post_thumbnail_url = data.post_thumbnail_url
+                                post_description = data.post_description
+                                //created_at = data.created_at
+                                updated_at = data.updated_at
+                                set_by = data.set_by
+                                response_type = data.response_type
+                                response_text = data.response_text
+                                //online = data.online
+                                if (post_description != "") {
+                                    textHome.text =
+                                        "You are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe post description is $post_description\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                } else {
+                                    textHome.text =
+                                        "You are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                }
+                                println(post_url)
+                                if (post_url != null) {
+                                    val handler = Handler(Looper.getMainLooper())
+                                    handler.post {
+                                        imageHome.scaleType = ImageView.ScaleType.CENTER_INSIDE
+                                        Glide.with(this@MainActivity).load(post_url)
+                                            .fitCenter()
+                                            .into(imageHome)
+                                        handler.removeCallbacksAndMessages(null)
+                                    }
+                                }
                             }
                         }
                     }
-                } else {
-                    println("error on json request: ${response.statusCode}")
-                }
             }
+        }
     }
 
 
     private fun orientation() {
         val orientation = resources.configuration.orientation
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            setContentView(R.layout.landscape)
+            setContentView(R.layout.landscape_multi)
         } else {
-            setContentView(R.layout.portrait)
+            setContentView(R.layout.portrait_multi)
         }
     }
+
 
     private fun theme() {
         if (isDarkThemeOn()) {
@@ -195,11 +344,14 @@ class MainActivity : AppCompatActivity() {
     private fun stop() {
         if (linkId!!.toInt() == 0) {
             Toast.makeText(this, "Set a id", Toast.LENGTH_SHORT).show()
+        } else if (multiMode && linkIdHome == "0" || linkIdLock == "0") {
+            Toast.makeText(this, "Set a id for multi mode", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(this, "Stopping Walltaker task...", Toast.LENGTH_SHORT).show()
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             val intent = Intent(this, BroadcastReceiver::class.java)
-            val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            val pendingIntent =
+                PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             alarmManager.cancel(pendingIntent)
             unregisterReceiver(receiver)
             stopService(Intent(this, Service::class.java))
@@ -213,7 +365,8 @@ class MainActivity : AppCompatActivity() {
         val wallpaperManager = WallpaperManager.getInstance(this)
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, BroadcastReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+        val pendingIntent =
+            PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         alarmManager.cancel(pendingIntent)
         unregisterReceiver(receiver)
         wallpaperManager.clear()
@@ -225,14 +378,17 @@ class MainActivity : AppCompatActivity() {
     private fun start() {
         if (linkId!!.toInt() == 0) {
             Toast.makeText(this, "Set a id", Toast.LENGTH_SHORT).show()
+        } else if (multiMode && (linkIdHome == "0" || linkIdLock == "0")) {
+            Toast.makeText(this, "Set a id for multi mode", Toast.LENGTH_SHORT).show()
         } else {
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             val intent = Intent(this, BroadcastReceiver::class.java)
-            val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            val pendingIntent =
+                PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
             alarmManager.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis() +1000,
+                System.currentTimeMillis() + 1000,
                 pendingIntent
             )
             startService(Intent(this, Service::class.java))
@@ -256,6 +412,7 @@ class MainActivity : AppCompatActivity() {
                 settings()
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -264,6 +421,7 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(applicationContext, SettingsActivity::class.java)
         startActivity(intent)
     }
+
     private fun configureReceiver() {
         val filter = IntentFilter()
         filter.addAction("com.gios.walltakerchanger")
@@ -274,17 +432,17 @@ class MainActivity : AppCompatActivity() {
 
 class LinkData(
     var id: String,
-    var expires: String,
+    //var expires: String,
     var username: String,
     var terms: String,
     var blacklist: String,
     var post_url: String,
     var post_thumbnail_url: String,
     var post_description: String,
-    var created_at: String,
+    //var created_at: String,
     var updated_at: String,
     var set_by: String,
     var response_type: String,
     var response_text: String,
-    var online: Boolean
+    //var online: Boolean
 )
