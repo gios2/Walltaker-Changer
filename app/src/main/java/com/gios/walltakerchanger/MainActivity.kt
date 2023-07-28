@@ -10,6 +10,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.net.ConnectivityManager.*
@@ -23,9 +24,12 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.bumptech.glide.Glide
+import com.dcastalia.localappupdate.DownloadApk
 import com.github.kittinunf.fuel.httpGet
 import com.google.gson.GsonBuilder
 import kotlin.system.exitProcess
@@ -99,6 +103,7 @@ class MainActivity : AppCompatActivity() {
         theme()
         obtainWallpaper()
         configureReceiver()
+        storagePerm()
 
         div = findViewById(R.id.divider)
         imageHome = findViewById(R.id.imageHome)
@@ -318,6 +323,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun storagePerm() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            val requestPermissionLauncher = registerForActivityResult(
+                ActivityResultContracts.RequestPermission()
+            ) { _: Boolean ->
+
+            }
+            requestPermissionLauncher.launch(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        }
+    }
 
     private fun theme() {
         if (isDarkThemeOn()) {
@@ -375,6 +394,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    @SuppressLint("ScheduleExactAlarm")
     private fun start() {
         if (linkId!!.toInt() == 0) {
             Toast.makeText(this, "Set a id", Toast.LENGTH_SHORT).show()
@@ -412,7 +432,13 @@ class MainActivity : AppCompatActivity() {
                 settings()
                 true
             }
-
+            R.id.action_upApp -> {
+                val url =
+                    "https://github.com/gios2/Walltaker-Changer/raw/main/app/release/app-release.apk"
+                val downloadApk = DownloadApk(this@MainActivity)
+                downloadApk.startDownloadingApk(url)
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -422,6 +448,7 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     private fun configureReceiver() {
         val filter = IntentFilter()
         filter.addAction("com.gios.walltakerchanger")
@@ -429,7 +456,7 @@ class MainActivity : AppCompatActivity() {
         registerReceiver(receiver, filter)
     }
 }
-
+@Suppress("PropertyName")
 class LinkData(
     var id: String,
     //var expires: String,

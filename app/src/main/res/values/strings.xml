@@ -15,12 +15,10 @@
     <string name="todo">TODO</string>
     <string name="update">Update</string>
 
-    <!-- Preference Titles -->
-
-    <!-- Messages Preferences -->
-
-    <!-- Sync Preferences -->
     <string name="the_app_will_close_when_start_is_pressed">The app will close when start is pressed</string>
     <string name="panic">Panic</string>
+
+    <string name="action_update" />
+    <string name="update_app">Update App</string>
 
 </resources>
