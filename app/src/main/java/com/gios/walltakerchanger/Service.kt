@@ -1,6 +1,7 @@
 package com.gios.walltakerchanger
 
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.app.Service
@@ -15,6 +16,7 @@ class Service : Service() {
         return null
     }
 
+    @SuppressLint("ScheduleExactAlarm")
     override fun onCreate() {
         Toast.makeText(this, "Walltaker Changer Service Created", Toast.LENGTH_SHORT).show()
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager

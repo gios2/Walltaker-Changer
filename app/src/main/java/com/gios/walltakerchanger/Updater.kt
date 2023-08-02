@@ -4,18 +4,22 @@ import android.app.WallpaperManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Environment
 import android.os.PowerManager
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import androidx.preference.PreferenceManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
+import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.httpGet
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import java.io.File
 
 
 @Suppress("DEPRECATION")
@@ -84,6 +88,11 @@ class Updater {
                                         }
                                     }
                                     lastUrlHome = data.post_url
+                                    if (sharedPreferences.getBoolean("download1", false)) {
+                                        downloadFile(
+                                            post_url_home!!
+                                        )
+                                    }
                                 }
 
                             }
@@ -142,10 +151,12 @@ class Updater {
                                             } catch (e: Exception) {
                                                 lastUrl = ""
                                             }
-
                                         }
-
-
+                                        if (sharedPreferences.getBoolean("download2", false)) {
+                                            downloadFile(
+                                                post_url_lock!!
+                                            )
+                                        }
                                     }
                                     lastUrl = data.post_url
                                 }
@@ -220,12 +231,14 @@ class Updater {
                                             }
 
                                         }
-
-
+                                        if (sharedPreferences.getBoolean("download", false)) {
+                                            downloadFile(
+                                                post_url!!
+                                            )
+                                    }
                                     }
                                     lastUrl = data.post_url
                                 }
-
                             }
                         } else {
                             println("error on json request: ${response.statusCode}")
@@ -234,6 +247,37 @@ class Updater {
                     }
             }
         }
+
+        private fun downloadFile(url: String?) {
+            if (url!=null){
+            val uri = Uri.parse(url)
+            val dI = uri.lastPathSegment.toString()
+            if (!File(Environment.getExternalStorageDirectory().absolutePath + "/walltaker/$dI").exists()) {
+                val folder =
+                    File(Environment.getExternalStorageDirectory().absolutePath + "/walltaker")
+                val destinationFile = File(folder, dI)
+
+                if (!folder.exists()) {
+                    folder.mkdirs()
+                }
+                try {
+                    Fuel.download(url).destination { _, _ -> destinationFile }
+                        .response { _, _, result ->
+                            when (result) {
+                                is com.github.kittinunf.result.Result.Success -> {
+                                    println("downloaded")
+                                }
+
+                                is com.github.kittinunf.result.Result.Failure -> {
+                                    println("Error")
+                                }
+                            }
+                        }
+                } catch (e: Exception) {
+                    println(e)
+                }
+            }
+        }
     }
-}
+}}
 

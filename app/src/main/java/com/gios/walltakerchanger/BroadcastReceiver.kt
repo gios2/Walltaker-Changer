@@ -1,5 +1,6 @@
 package com.gios.walltakerchanger
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
@@ -8,6 +9,7 @@ import android.content.Intent
 
 
 class BroadcastReceiver : BroadcastReceiver() {
+    @SuppressLint("ScheduleExactAlarm")
     override fun onReceive(context: Context, intent: Intent?) {
 
         Updater.update(context)
