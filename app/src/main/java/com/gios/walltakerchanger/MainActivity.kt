@@ -97,13 +97,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        storagePerm()
         ignoreBatteryOptimization()
         orientation()
         theme()
         obtainWallpaper()
         configureReceiver()
-        storagePerm()
+
+
 
         div = findViewById(R.id.divider)
         imageHome = findViewById(R.id.imageHome)
@@ -327,7 +328,7 @@ class MainActivity : AppCompatActivity() {
         if (ContextCompat.checkSelfPermission(
                 this,
                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
+            ) == PackageManager.PERMISSION_DENIED
         ) {
             val requestPermissionLauncher = registerForActivityResult(
                 ActivityResultContracts.RequestPermission()
@@ -337,17 +338,15 @@ class MainActivity : AppCompatActivity() {
             requestPermissionLauncher.launch(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
         }
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-            if (ContextCompat.checkSelfPermission(
-                    this,
-                    android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
+            if (!Environment.isExternalStorageManager()) {
                 val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
                 intent.data = Uri.parse("package:" + this.packageName)
                 this.startActivity(intent)
             }
+
         }
     }
+
 
     private fun theme() {
         if (isDarkThemeOn()) {
