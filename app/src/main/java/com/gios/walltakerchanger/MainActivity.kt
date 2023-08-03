@@ -336,6 +336,17 @@ class MainActivity : AppCompatActivity() {
             }
             requestPermissionLauncher.launch(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
         }
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+                intent.data = Uri.parse("package:" + this.packageName)
+                this.startActivity(intent)
+            }
+        }
     }
 
     private fun theme() {
@@ -432,6 +443,7 @@ class MainActivity : AppCompatActivity() {
                 settings()
                 true
             }
+
             R.id.action_upApp -> {
                 val url =
                     "https://github.com/gios2/Walltaker-Changer/raw/main/app/release/app-release.apk"
@@ -439,6 +451,7 @@ class MainActivity : AppCompatActivity() {
                 downloadApk.startDownloadingApk(url)
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -456,6 +469,7 @@ class MainActivity : AppCompatActivity() {
         registerReceiver(receiver, filter)
     }
 }
+
 @Suppress("PropertyName")
 class LinkData(
     var id: String,

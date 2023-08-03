@@ -235,7 +235,7 @@ class Updater {
                                             downloadFile(
                                                 post_url!!
                                             )
-                                    }
+                                        }
                                     }
                                     lastUrl = data.post_url
                                 }
@@ -249,35 +249,36 @@ class Updater {
         }
 
         private fun downloadFile(url: String?) {
-            if (url!=null){
-            val uri = Uri.parse(url)
-            val dI = uri.lastPathSegment.toString()
-            if (!File(Environment.getExternalStorageDirectory().absolutePath + "/walltaker/$dI").exists()) {
-                val folder =
-                    File(Environment.getExternalStorageDirectory().absolutePath + "/walltaker")
-                val destinationFile = File(folder, dI)
+            if (url != null) {
+                val uri = Uri.parse(url)
+                val dI = uri.lastPathSegment.toString()
+                if (!File(Environment.getExternalStorageDirectory().absolutePath + "/WTchanger/$dI").exists()) {
+                    val folder =
+                        File(Environment.getExternalStorageDirectory().absolutePath + "/WTchanger")
+                    val destinationFile = File(folder, dI)
 
-                if (!folder.exists()) {
-                    folder.mkdirs()
-                }
-                try {
-                    Fuel.download(url).destination { _, _ -> destinationFile }
-                        .response { _, _, result ->
-                            when (result) {
-                                is com.github.kittinunf.result.Result.Success -> {
-                                    println("downloaded")
-                                }
+                    if (!folder.exists()) {
+                        folder.mkdirs()
+                    }
+                    try {
+                        Fuel.download(url).destination { _, _ -> destinationFile }
+                            .response { _, _, result ->
+                                when (result) {
+                                    is com.github.kittinunf.result.Result.Success -> {
+                                        println("downloaded")
+                                    }
 
-                                is com.github.kittinunf.result.Result.Failure -> {
-                                    println("Error")
+                                    is com.github.kittinunf.result.Result.Failure -> {
+                                        println("Error")
+                                    }
                                 }
                             }
-                        }
-                } catch (e: Exception) {
-                    println(e)
+                    } catch (e: Exception) {
+                        println(e)
+                    }
                 }
             }
         }
     }
-}}
+}
 
