@@ -12,9 +12,13 @@ This app has been tested with android 10, but it should work from android 7.0 an
 **Features**
 
 Start = start the service
+
 Stop = stop the service
+
 Update = update the view about your link
+
 Panic = reset the wallpaper with default one
+
 
 **Important**
 The videos don't work (at least for the moment)
