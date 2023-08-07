@@ -373,7 +373,7 @@ class MainActivity : AppCompatActivity() {
     private fun stop() {
         if (linkId!!.toInt() == 0) {
             Toast.makeText(this, "Set a id", Toast.LENGTH_SHORT).show()
-        } else if (multiMode && linkIdHome == "0" || linkIdLock == "0") {
+        } else if (multiMode && (linkIdHome == "0" || linkIdLock == "0")) {
             Toast.makeText(this, "Set a id for multi mode", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(this, "Stopping Walltaker task...", Toast.LENGTH_SHORT).show()
