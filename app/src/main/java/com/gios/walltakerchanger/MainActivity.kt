@@ -73,7 +73,6 @@ var setHome: Boolean = false
 var setLock: Boolean = false
 var id: String? = null
 
-// --Commented out by Inspection (06/07/2023 01:25):var expires: String? = null
 var username: String? = null
 var terms: String? = null
 var blacklist: String? = null
@@ -83,19 +82,19 @@ var post_url_lock: String? = null
 var post_thumbnail_url: String? = null
 var post_description: String? = null
 
-// --Commented out by Inspection (06/07/2023 01:25):var created_at: String? = null
 var updated_at: String? = null
 var set_by: String? = null
 var response_type: String? = null
 var response_text: String? = null
 
-// --Commented out by Inspection (06/07/2023 01:25):var online: Boolean = false
 lateinit var wl: WakeLock
 var receiver: BroadcastReceiver? = null
 var multiMode = false
 var new = false
-var liv = false
-var clos=false
+var livS = false
+var livM = false
+
+var clos = false
 
 class MainActivity : AppCompatActivity() {
 
@@ -202,20 +201,21 @@ class MainActivity : AppCompatActivity() {
                                 response_type = data.response_type
                                 response_text = data.response_text
                                 //online = data.online
-                                if (post_description != "") {
-                                    textHome.text =
-                                        "HomeScreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe post description is $post_description\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
-                                } else {
-                                    textHome.text =
-                                        "HomeScreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                runOnUiThread {
+                                    if (post_description != "") {
+                                        textHome.text =
+                                            "HomeScreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe post description is $post_description\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                    } else {
+                                        textHome.text =
+                                            "HomeScreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                    }
                                 }
                                 if (post_url_home != null) {
                                     val handler = Handler(Looper.getMainLooper())
                                     handler.post {
                                         imageHome.scaleType = ImageView.ScaleType.CENTER_INSIDE
                                         Glide.with(this@MainActivity).load(post_url_home)
-                                            .fitCenter()
-                                            .into(imageHome)
+                                            .fitCenter().into(imageHome)
                                         handler.removeCallbacksAndMessages(null)
                                     }
                                 }
@@ -244,12 +244,14 @@ class MainActivity : AppCompatActivity() {
                                         response_type = data.response_type
                                         response_text = data.response_text
                                         //online = data.online
-                                        if (post_description != "") {
-                                            textLock.text =
-                                                "Lockscreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe post description is $post_description\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
-                                        } else {
-                                            textLock.text =
-                                                "Lockscreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                        runOnUiThread {
+                                            if (post_description != "") {
+                                                textLock.text =
+                                                    "Lockscreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe post description is $post_description\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                            } else {
+                                                textLock.text =
+                                                    "Lockscreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                            }
                                         }
                                         if (post_url_lock != null) {
                                             val handler = Handler(Looper.getMainLooper())
@@ -257,8 +259,7 @@ class MainActivity : AppCompatActivity() {
                                                 imageHome.scaleType =
                                                     ImageView.ScaleType.CENTER_INSIDE
                                                 Glide.with(this@MainActivity).load(post_url_lock)
-                                                    .fitCenter()
-                                                    .into(imageLock)
+                                                    .fitCenter().into(imageLock)
                                                 handler.removeCallbacksAndMessages(null)
                                             }
                                         }
@@ -305,8 +306,7 @@ class MainActivity : AppCompatActivity() {
                                     val handler = Handler(Looper.getMainLooper())
                                     handler.post {
                                         imageHome.scaleType = ImageView.ScaleType.CENTER_INSIDE
-                                        Glide.with(this@MainActivity).load(post_url)
-                                            .fitCenter()
+                                        Glide.with(this@MainActivity).load(post_url).fitCenter()
                                             .into(imageHome)
                                         handler.removeCallbacksAndMessages(null)
                                     }
@@ -330,8 +330,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun storagePerm() {
         if (ContextCompat.checkSelfPermission(
-                this,
-                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_DENIED
         ) {
             val requestPermissionLauncher = registerForActivityResult(
@@ -375,14 +374,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun stop() {
+        val sharedPreferences: SharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(this)
+        multiMode = sharedPreferences.getBoolean("multimode", false)
+        livS = sharedPreferences.getBoolean("liveS", false)
+        livM = sharedPreferences.getBoolean("liveM", false)
         if (linkId!!.toInt() == 0) {
             Toast.makeText(this, "Set a id", Toast.LENGTH_SHORT).show()
         } else if (multiMode && (linkIdHome == "0" || linkIdLock == "0")) {
             Toast.makeText(this, "Set a id for multi mode", Toast.LENGTH_SHORT).show()
         } else {
-            if (liv) {
+            if (livS || livM) {
                 stopService(Intent(this, Wallpapz::class.java))
-                clos=true
+                clos = true
                 val wallpaperManager = WallpaperManager.getInstance(this)
                 val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
                 val intent = Intent(this, BroadcastReceiver::class.java)
@@ -393,25 +397,31 @@ class MainActivity : AppCompatActivity() {
                 wallpaperManager.clear()
                 finishAndRemoveTask()
                 exitProcess(0)
-            }else{
-            Toast.makeText(this, "Stopping Walltaker task...", Toast.LENGTH_SHORT).show()
-            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            val intent = Intent(this, BroadcastReceiver::class.java)
-            val pendingIntent =
-                PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-            alarmManager.cancel(pendingIntent)
-            unregisterReceiver(receiver)
-            stopService(Intent(this, Service::class.java))
-            finishAndRemoveTask()
-            exitProcess(0)
-        }}
+            } else {
+                Toast.makeText(this, "Stopping Walltaker task...", Toast.LENGTH_SHORT).show()
+                val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                val intent = Intent(this, BroadcastReceiver::class.java)
+                val pendingIntent =
+                    PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+                alarmManager.cancel(pendingIntent)
+                unregisterReceiver(receiver)
+                stopService(Intent(this, Service::class.java))
+                finishAndRemoveTask()
+                exitProcess(0)
+            }
+        }
     }
 
     private fun panic() {
+        val sharedPreferences: SharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(this)
+        multiMode = sharedPreferences.getBoolean("multimode", false)
+        livS = sharedPreferences.getBoolean("liveS", false)
+        livM = sharedPreferences.getBoolean("liveM", false)
         stopService(Intent(this, Service::class.java))
-        if (liv) {
+        if (livS || livM) {
             stopService(Intent(this, Wallpapz::class.java))
-            clos=true
+            clos = true
         }
         val wallpaperManager = WallpaperManager.getInstance(this)
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -431,12 +441,14 @@ class MainActivity : AppCompatActivity() {
         val sharedPreferences: SharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(this)
         multiMode = sharedPreferences.getBoolean("multimode", false)
-        liv = sharedPreferences.getBoolean("live", false)
+        livS = sharedPreferences.getBoolean("liveS", false)
+        livM = sharedPreferences.getBoolean("liveM", false)
+
         if (linkId!!.toInt() == 0) {
             Toast.makeText(this, "Set a id", Toast.LENGTH_SHORT).show()
         } else if (multiMode && (linkIdHome == "0" || linkIdLock == "0")) {
             Toast.makeText(this, "Set a id for multi mode", Toast.LENGTH_SHORT).show()
-        } else if (liv) {
+        } else if (livS || livM) {
             startService(Intent(this, Wallpapz::class.java))
             val intent2 = Intent()
             intent2.action = WallpaperManager.ACTION_LIVE_WALLPAPER_CHOOSER
@@ -447,9 +459,7 @@ class MainActivity : AppCompatActivity() {
                 PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
             alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis() + 1000,
-                pendingIntent
+                AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000, pendingIntent
             )
 
             Timer().schedule(delay = 10000) {
@@ -463,9 +473,7 @@ class MainActivity : AppCompatActivity() {
                 PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
             alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis() + 1000,
-                pendingIntent
+                AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000, pendingIntent
             )
             startService(Intent(this, Service::class.java))
             finishAndRemoveTask()

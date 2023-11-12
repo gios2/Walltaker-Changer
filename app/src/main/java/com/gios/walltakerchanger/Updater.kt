@@ -21,11 +21,11 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.File
 
-var lastUrl = ""
-
+var liveUrl=""
 @Suppress("DEPRECATION")
 class Updater {
     companion object {
+        private var lastUrl = ""
         private var lastUrlHome = ""
         private var lastUrlLock = ""
         fun update(context: Context) {
@@ -36,8 +36,10 @@ class Updater {
             val sharedPreferences: SharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(context)
             multiMode = sharedPreferences.getBoolean("multimode", false)
-            liv = sharedPreferences.getBoolean("live", false)
-            if (liv) {
+            livS = sharedPreferences.getBoolean("liveS", false)
+            livM = sharedPreferences.getBoolean("liveM", false)
+
+            if (livS) {
                 linkId = sharedPreferences.getString("id", "0")
                 linkUrl = "https://walltaker.joi.how/api/links/$linkId.json"
                 linkUrl!!.httpGet().header("User-Agent" to "Walltaker-Changer/")
@@ -45,25 +47,26 @@ class Updater {
                         if (response.statusCode == 200) {
                             val gson = GsonBuilder().create()
                             val data = gson.fromJson(result.get(), LinkData::class.java)
-                            if (data != null  ) {
+                            if (data != null) {
                                 post_url = data.post_url
-                                if (lastUrl != post_url){
-                                if (post_url != "null" && !post_url.isNullOrEmpty()) {
-                                    if (sharedPreferences.getBoolean("download", false)) {
+                                if (liveUrl != post_url) {
+                                    if (post_url != "null" && !post_url.isNullOrEmpty()) {
+                                        if (sharedPreferences.getBoolean("download", false)) {
                                             downloadFile(
                                                 post_url!!
                                             )
                                         }
                                     }
-                                    new=true
-                                    lastUrl = data.post_url
-                                }}
+                                    new = true
+                                    liveUrl = data.post_url
+                                }
+                            }
                         } else {
                             println("error on json request: ${response.statusCode}")
-                        }}
-                        wl.release()
+                        }
+                    }
+                wl.release()
             } else if (multiMode) {
-
                 linkIdHome = sharedPreferences.getString("IdHome", "0")
                 linkUrlHome = "https://walltaker.joi.how/api/links/$linkIdHome.json"
                 linkUrlHome!!.httpGet().header("User-Agent" to "Walltaker-Changer/")
@@ -71,55 +74,73 @@ class Updater {
                         if (response.statusCode == 200) {
                             val gson = GsonBuilder().create()
                             val data = gson.fromJson(result.get(), LinkData::class.java)
-                            if (data != null) {
-                                post_url_home = data.post_url
-
-                                if (post_url_home != "null" && !post_url_home.isNullOrEmpty()) {
-                                    if (post_url_home != lastUrlHome) {
-                                        lateinit var bitmap: Bitmap
-                                        val wallpaperManager = WallpaperManager.getInstance(context)
-                                        runBlocking {
-                                            val job = launch {
-                                                val displayMetrics = DisplayMetrics()
-                                                val windowsManager =
-                                                    context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-                                                windowsManager.defaultDisplay.getMetrics(
-                                                    displayMetrics
+                            if (livM) {
+                                if (data != null) {
+                                    post_url = data.post_url
+                                    if (liveUrl != post_url) {
+                                        if (post_url != "null" && !post_url.isNullOrEmpty()) {
+                                            if (sharedPreferences.getBoolean("download", false)) {
+                                                downloadFile(
+                                                    post_url!!
                                                 )
-                                                val width = displayMetrics.widthPixels
-                                                val height = displayMetrics.heightPixels
-
-                                                val futureTarget: FutureTarget<Bitmap> =
-                                                    Glide.with(context).asBitmap()
-                                                        .load(post_url_home)
-                                                        .fitCenter().submit(width, height)
-                                                bitmap = withContext(Dispatchers.IO) {
-                                                    futureTarget.get()
-                                                }
-                                                Glide.with(context).clear(futureTarget)
-                                            }
-                                            job.join()
-                                            try {
-                                                println("Setting home")
-                                                wallpaperManager.setBitmap(
-                                                    bitmap,
-                                                    null,
-                                                    true,
-                                                    WallpaperManager.FLAG_SYSTEM
-                                                )
-                                            } catch (e: Exception) {
-                                                lastUrlHome = ""
                                             }
                                         }
-                                    }
-                                    lastUrlHome = data.post_url
-                                    if (sharedPreferences.getBoolean("download1", false)) {
-                                        downloadFile(
-                                            post_url_home!!
-                                        )
+                                        new = true
+                                        liveUrl = data.post_url
                                     }
                                 }
+                            } else {
+                                if (data != null) {
+                                    post_url_home = data.post_url
 
+                                    if (post_url_home != "null" && !post_url_home.isNullOrEmpty()) {
+                                        if (post_url_home != lastUrlHome) {
+                                            lateinit var bitmap: Bitmap
+                                            val wallpaperManager =
+                                                WallpaperManager.getInstance(context)
+                                            runBlocking {
+                                                val job = launch {
+                                                    val displayMetrics = DisplayMetrics()
+                                                    val windowsManager =
+                                                        context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+                                                    windowsManager.defaultDisplay.getMetrics(
+                                                        displayMetrics
+                                                    )
+                                                    val width = displayMetrics.widthPixels
+                                                    val height = displayMetrics.heightPixels
+
+                                                    val futureTarget: FutureTarget<Bitmap> =
+                                                        Glide.with(context).asBitmap()
+                                                            .load(post_url_home)
+                                                            .fitCenter().submit(width, height)
+                                                    bitmap = withContext(Dispatchers.IO) {
+                                                        futureTarget.get()
+                                                    }
+                                                    Glide.with(context).clear(futureTarget)
+                                                }
+                                                job.join()
+                                                try {
+                                                    println("Setting home")
+                                                    wallpaperManager.setBitmap(
+                                                        bitmap,
+                                                        null,
+                                                        true,
+                                                        WallpaperManager.FLAG_SYSTEM
+                                                    )
+                                                } catch (e: Exception) {
+                                                    lastUrlHome = ""
+                                                }
+                                            }
+                                        }
+                                        lastUrlHome = data.post_url
+                                        if (sharedPreferences.getBoolean("download1", false)) {
+                                            downloadFile(
+                                                post_url_home!!
+                                            )
+                                        }
+                                    }
+
+                                }
                             }
                         } else {
                             println("error on home json request: ${response.statusCode}")
@@ -128,7 +149,6 @@ class Updater {
                     }
                 linkIdLock = sharedPreferences.getString("IdLock", "0")
                 linkUrlLock = "https://walltaker.joi.how/api/links/$linkIdLock.json"
-
                 linkUrlLock!!.httpGet().header("User-Agent" to "Walltaker-Changer/")
                     .responseString { _, response2, result2 ->
                         if (response2.statusCode == 200) {
@@ -164,7 +184,6 @@ class Updater {
                                             }
                                             job.join()
                                             try {
-
                                                 println("Setting lock")
                                                 wallpaperManager.setBitmap(
                                                     bitmap,
@@ -174,7 +193,7 @@ class Updater {
                                                 )
 
                                             } catch (e: Exception) {
-                                                lastUrl = ""
+                                                lastUrlLock = ""
                                             }
                                         }
                                         if (sharedPreferences.getBoolean("download2", false)) {
@@ -183,7 +202,7 @@ class Updater {
                                             )
                                         }
                                     }
-                                    lastUrl = data.post_url
+                                    lastUrlLock = data.post_url
                                 }
 
 

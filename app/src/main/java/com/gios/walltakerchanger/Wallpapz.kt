@@ -40,7 +40,7 @@ class Wallpapz : WallpaperService() {
             println(post_url!!.split(".").last())
 
             webViewW.loadData(
-                "<html><head><style type=text/css>body{margin:auto auto;text-align:center;} body{background-image:url(${lastUrl})!important; background-attachment:fixed; background-position:center; background-size: cover;}  img{display: block; margin: 0 auto; width: 100%;} </style></head><body></body></html>",
+                "<html><head><style type=text/css>body{margin:auto auto;text-align:center;} body{background-image:url(${liveUrl})!important; background-attachment:fixed; background-position:center; background-size: cover;}  img{display: block; margin: 0 auto; width: 100%;} </style></head><body></body></html>",
                 "text/html",
                 "UTF-8"
             )
@@ -61,7 +61,7 @@ class Wallpapz : WallpaperService() {
                                         webViewW.draw(canvas)
                                         if (new) {
                                             webViewW.loadData(
-                                                "<html><head><style type=text/css>body{margin:auto auto;text-align:center;} body{background-image:url(${lastUrl})!important; background-attachment:fixed; background-position:center; background-size: cover;}  img{display: block; margin: 0 auto; width: 100%; height: 100%;} </style></head><body></body></html>",
+                                                "<html><head><style type=text/css>body{margin:auto auto;text-align:center;} body{background-image:url(${liveUrl})!important; background-attachment:fixed; background-position:center; background-size: cover;}  img{display: block; margin: 0 auto; width: 100%; height: 100%;} </style></head><body></body></html>",
                                                 "text/html",
                                                 "UTF-8"
                                             )

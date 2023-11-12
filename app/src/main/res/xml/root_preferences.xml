@@ -15,7 +15,6 @@
                 app:title="@string/api_key"
                 app:useSimpleSummaryProvider="true" />
         </PreferenceCategory>
-
         <SwitchPreferenceCompat
             app:key="wallpaper"
             app:title="Homescreen" />
@@ -23,36 +22,35 @@
             app:key="lockscreen"
             app:title="@string/lockscreen" />
         <SwitchPreferenceCompat
-            app:key="live"
-            app:title="Live wallpaper" />
+            app:key="liveS"
+            app:title="Live wallpaper"/>
         <SwitchPreferenceCompat
             app:key="download"
             app:title="Download" />
+
     </PreferenceCategory>
 
     <PreferenceCategory app:title="Multi mode">
         <SwitchPreferenceCompat
             app:key="multimode"
-            app:title="Enable multi mode"
-            />
-        <PreferenceCategory app:title="Homescreen">
-            <EditTextPreference
-                app:key="IdHome"
-                app:title="Link Id"
-                app:useSimpleSummaryProvider="true" />
-            <SwitchPreferenceCompat
-                app:key="download1"
-                app:title="Download " />
-        </PreferenceCategory>
-        <PreferenceCategory app:title="Lockscreen">
-            <EditTextPreference
-                app:key="IdLock"
-                app:title="Link Id"
-                app:useSimpleSummaryProvider="true" />
-            <SwitchPreferenceCompat
-                app:key="download2"
-                app:title="Download" />
-        </PreferenceCategory>
+            app:title="Enable multi mode" />
+        <EditTextPreference
+            app:key="IdHome"
+            app:title="Homescreen Link Id"
+            app:useSimpleSummaryProvider="true" />
+        <SwitchPreferenceCompat
+            app:key="liveM"
+            app:title="Live wallpaper" />
+        <SwitchPreferenceCompat
+            app:key="download1"
+            app:title="Download " />
+        <EditTextPreference
+            app:key="IdLock"
+            app:title="Lockscreen Link Id"
+            app:useSimpleSummaryProvider="true" />
+        <SwitchPreferenceCompat
+            app:key="download2"
+            app:title="Download" />
     </PreferenceCategory>
 
 </PreferenceScreen>
