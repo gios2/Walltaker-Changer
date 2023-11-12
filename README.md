@@ -19,6 +19,17 @@ Update = update the view about your link
 
 Panic = reset the wallpaper with default one
 
+To activate the live wallpaper you must:
+1 Open the app
+2 Go to the app settings
+3 Activate Live wallpaper from single or multi mode
+4 Click update
+5 Click start
+6 Choose WT Changer (you have 10 seconds after which the app closes)
+6.1 Set the live wallpaper on the home screen or both on the home screen and on the lock screen (Important don’t put the live wallpaper on the lock screen if you intend to use multimode)
+6.2 wait for the app to close (don't close it)
+7 WAIT
+8 You have the animated wallpaper
 
 **Important**
 The videos don't work (at least for the moment)
