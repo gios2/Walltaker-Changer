@@ -23,6 +23,9 @@
             app:key="lockscreen"
             app:title="@string/lockscreen" />
         <SwitchPreferenceCompat
+            app:key="live"
+            app:title="Live wallpaper" />
+        <SwitchPreferenceCompat
             app:key="download"
             app:title="Download" />
     </PreferenceCategory>

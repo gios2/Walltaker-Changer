@@ -32,6 +32,8 @@ import com.bumptech.glide.Glide
 import com.dcastalia.localappupdate.DownloadApk
 import com.github.kittinunf.fuel.httpGet
 import com.google.gson.GsonBuilder
+import java.util.Timer
+import kotlin.concurrent.schedule
 import kotlin.system.exitProcess
 
 @SuppressLint("StaticFieldLeak")
@@ -75,7 +77,7 @@ var id: String? = null
 var username: String? = null
 var terms: String? = null
 var blacklist: String? = null
-var post_url: String? = null
+var post_url: String? = ""
 var post_url_home: String? = null
 var post_url_lock: String? = null
 var post_thumbnail_url: String? = null
@@ -91,6 +93,9 @@ var response_text: String? = null
 lateinit var wl: WakeLock
 var receiver: BroadcastReceiver? = null
 var multiMode = false
+var new = false
+var liv = false
+var clos=false
 
 class MainActivity : AppCompatActivity() {
 
@@ -174,7 +179,6 @@ class MainActivity : AppCompatActivity() {
         linkUrlHome = "https://walltaker.joi.how/api/links/$linkIdHome.json"
         linkIdLock = sharedPreferences.getString("IdLock", "0")
         linkUrlLock = "https://walltaker.joi.how/api/links/$linkIdLock.json"
-        println(linkId)
         runOnUiThread {
             if (multiMode) {
                 linkUrlHome!!.httpGet().header("User-Agent" to "Walltaker-Changer/")
@@ -205,7 +209,6 @@ class MainActivity : AppCompatActivity() {
                                     textHome.text =
                                         "HomeScreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
                                 }
-                                println(post_url_home)
                                 if (post_url_home != null) {
                                     val handler = Handler(Looper.getMainLooper())
                                     handler.post {
@@ -248,7 +251,6 @@ class MainActivity : AppCompatActivity() {
                                             textLock.text =
                                                 "Lockscreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
                                         }
-                                        println(post_url_lock)
                                         if (post_url_lock != null) {
                                             val handler = Handler(Looper.getMainLooper())
                                             handler.post {
@@ -289,14 +291,16 @@ class MainActivity : AppCompatActivity() {
                                 response_type = data.response_type
                                 response_text = data.response_text
                                 //online = data.online
-                                if (post_description != "") {
-                                    textHome.text =
-                                        "You are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe post description is $post_description\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
-                                } else {
-                                    textHome.text =
-                                        "You are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                runOnUiThread {
+                                    if (post_description != "") {
+
+                                        textHome.text =
+                                            "You are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe post description is $post_description\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                    } else {
+                                        textHome.text =
+                                            "You are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                    }
                                 }
-                                println(post_url)
                                 if (post_url != null) {
                                     val handler = Handler(Looper.getMainLooper())
                                     handler.post {
@@ -376,6 +380,20 @@ class MainActivity : AppCompatActivity() {
         } else if (multiMode && (linkIdHome == "0" || linkIdLock == "0")) {
             Toast.makeText(this, "Set a id for multi mode", Toast.LENGTH_SHORT).show()
         } else {
+            if (liv) {
+                stopService(Intent(this, Wallpapz::class.java))
+                clos=true
+                val wallpaperManager = WallpaperManager.getInstance(this)
+                val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                val intent = Intent(this, BroadcastReceiver::class.java)
+                val pendingIntent =
+                    PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+                alarmManager.cancel(pendingIntent)
+                unregisterReceiver(receiver)
+                wallpaperManager.clear()
+                finishAndRemoveTask()
+                exitProcess(0)
+            }else{
             Toast.makeText(this, "Stopping Walltaker task...", Toast.LENGTH_SHORT).show()
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             val intent = Intent(this, BroadcastReceiver::class.java)
@@ -386,11 +404,15 @@ class MainActivity : AppCompatActivity() {
             stopService(Intent(this, Service::class.java))
             finishAndRemoveTask()
             exitProcess(0)
-        }
+        }}
     }
 
     private fun panic() {
         stopService(Intent(this, Service::class.java))
+        if (liv) {
+            stopService(Intent(this, Wallpapz::class.java))
+            clos=true
+        }
         val wallpaperManager = WallpaperManager.getInstance(this)
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, BroadcastReceiver::class.java)
@@ -406,10 +428,34 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("ScheduleExactAlarm")
     private fun start() {
+        val sharedPreferences: SharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(this)
+        multiMode = sharedPreferences.getBoolean("multimode", false)
+        liv = sharedPreferences.getBoolean("live", false)
         if (linkId!!.toInt() == 0) {
             Toast.makeText(this, "Set a id", Toast.LENGTH_SHORT).show()
         } else if (multiMode && (linkIdHome == "0" || linkIdLock == "0")) {
             Toast.makeText(this, "Set a id for multi mode", Toast.LENGTH_SHORT).show()
+        } else if (liv) {
+            startService(Intent(this, Wallpapz::class.java))
+            val intent2 = Intent()
+            intent2.action = WallpaperManager.ACTION_LIVE_WALLPAPER_CHOOSER
+            startActivity(intent2)
+            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val intent = Intent(this, BroadcastReceiver::class.java)
+            val pendingIntent =
+                PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis() + 1000,
+                pendingIntent
+            )
+
+            Timer().schedule(delay = 10000) {
+                finishAndRemoveTask()
+                exitProcess(0)
+            }
         } else {
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             val intent = Intent(this, BroadcastReceiver::class.java)

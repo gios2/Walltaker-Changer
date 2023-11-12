@@ -8,7 +8,6 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
-import android.widget.Toast
 
 
 class Service : Service() {
@@ -18,7 +17,6 @@ class Service : Service() {
 
     @SuppressLint("ScheduleExactAlarm")
     override fun onCreate() {
-        Toast.makeText(this, "Walltaker Changer Service Created", Toast.LENGTH_SHORT).show()
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, BroadcastReceiver::class.java)
         val alarmIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)

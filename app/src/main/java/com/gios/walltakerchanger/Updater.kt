@@ -21,15 +21,14 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.File
 
+var lastUrl = ""
 
 @Suppress("DEPRECATION")
 class Updater {
     companion object {
-        private var lastUrl = ""
         private var lastUrlHome = ""
         private var lastUrlLock = ""
         fun update(context: Context) {
-
 
             val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
             wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "WalltakerChanger:WAKEUP")
@@ -37,8 +36,34 @@ class Updater {
             val sharedPreferences: SharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(context)
             multiMode = sharedPreferences.getBoolean("multimode", false)
+            liv = sharedPreferences.getBoolean("live", false)
+            if (liv) {
+                linkId = sharedPreferences.getString("id", "0")
+                linkUrl = "https://walltaker.joi.how/api/links/$linkId.json"
+                linkUrl!!.httpGet().header("User-Agent" to "Walltaker-Changer/")
+                    .responseString { _, response, result ->
+                        if (response.statusCode == 200) {
+                            val gson = GsonBuilder().create()
+                            val data = gson.fromJson(result.get(), LinkData::class.java)
+                            if (data != null  ) {
+                                post_url = data.post_url
+                                if (lastUrl != post_url){
+                                if (post_url != "null" && !post_url.isNullOrEmpty()) {
+                                    if (sharedPreferences.getBoolean("download", false)) {
+                                            downloadFile(
+                                                post_url!!
+                                            )
+                                        }
+                                    }
+                                    new=true
+                                    lastUrl = data.post_url
+                                }}
+                        } else {
+                            println("error on json request: ${response.statusCode}")
+                        }}
+                        wl.release()
+            } else if (multiMode) {
 
-            if (multiMode) {
                 linkIdHome = sharedPreferences.getString("IdHome", "0")
                 linkUrlHome = "https://walltaker.joi.how/api/links/$linkIdHome.json"
                 linkUrlHome!!.httpGet().header("User-Agent" to "Walltaker-Changer/")
@@ -165,6 +190,7 @@ class Updater {
                             }
                         }
                     }
+
             } else {
                 linkId = sharedPreferences.getString("id", "0")
                 linkUrl = "https://walltaker.joi.how/api/links/$linkId.json"
