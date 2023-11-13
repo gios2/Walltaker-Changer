@@ -37,7 +37,6 @@ class Wallpapz : WallpaperService() {
             webViewW.settings.javaScriptEnabled = true
             webViewW.setBackgroundColor(0)
             webViewW.setLayerType(View.LAYER_TYPE_HARDWARE, null)
-            println(post_url!!.split(".").last())
 
             webViewW.loadData(
                 "<html><head><style type=text/css>body{margin:auto auto;text-align:center;} body{background-image:url(${liveUrl})!important; background-attachment:fixed; background-position:center; background-size: cover;}  img{display: block; margin: 0 auto; width: 100%;} </style></head><body></body></html>",

@@ -21,7 +21,8 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.File
 
-var liveUrl=""
+var liveUrl = ""
+
 @Suppress("DEPRECATION")
 class Updater {
     companion object {

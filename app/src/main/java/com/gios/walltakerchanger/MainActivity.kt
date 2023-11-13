@@ -101,8 +101,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         storagePerm()
         ignoreBatteryOptimization()
+
         orientation()
         theme()
         obtainWallpaper()
@@ -329,6 +331,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun storagePerm() {
+
         if (ContextCompat.checkSelfPermission(
                 this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) == PackageManager.PERMISSION_DENIED
@@ -519,7 +522,11 @@ class MainActivity : AppCompatActivity() {
         val filter = IntentFilter()
         filter.addAction("com.gios.walltakerchanger")
         receiver = BroadcastReceiver()
-        registerReceiver(receiver, filter)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(receiver, filter, RECEIVER_EXPORTED)
+        } else {
+            registerReceiver(receiver, filter)
+        }
     }
 }
 
