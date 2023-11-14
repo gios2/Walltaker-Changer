@@ -425,6 +425,16 @@ class MainActivity : AppCompatActivity() {
         if (livS || livM) {
             stopService(Intent(this, Wallpapz::class.java))
             clos = true
+            val wallpaperManager = WallpaperManager.getInstance(this)
+            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val intent = Intent(this, BroadcastReceiver::class.java)
+            val pendingIntent =
+                PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            alarmManager.cancel(pendingIntent)
+            unregisterReceiver(receiver)
+            wallpaperManager.clear()
+            finishAndRemoveTask()
+            exitProcess(0)
         }
         val wallpaperManager = WallpaperManager.getInstance(this)
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
