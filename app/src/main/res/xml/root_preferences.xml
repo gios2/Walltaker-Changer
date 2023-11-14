@@ -25,6 +25,12 @@
             app:key="liveS"
             app:title="Live wallpaper"/>
         <SwitchPreferenceCompat
+            app:key="iFitLive"
+            app:title="Fit Live Wallpaper"/>
+        <SwitchPreferenceCompat
+            app:key="iFit"
+            app:title="Fit"/>
+        <SwitchPreferenceCompat
             app:key="download"
             app:title="Download" />
 
@@ -42,12 +48,21 @@
             app:key="liveM"
             app:title="Live wallpaper" />
         <SwitchPreferenceCompat
+            app:key="iFitLive"
+            app:title="Fit Live Wallpaper"/>
+        <SwitchPreferenceCompat
+            app:key="iFitH"
+            app:title="Fit Homescreen"/>
+        <SwitchPreferenceCompat
             app:key="download1"
             app:title="Download " />
         <EditTextPreference
             app:key="IdLock"
             app:title="Lockscreen Link Id"
             app:useSimpleSummaryProvider="true" />
+        <SwitchPreferenceCompat
+            app:key="iFitL"
+            app:title="Fit Lockscreen"/>
         <SwitchPreferenceCompat
             app:key="download2"
             app:title="Download" />

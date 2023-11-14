@@ -93,7 +93,10 @@ var multiMode = false
 var new = false
 var livS = false
 var livM = false
-
+var iFit = false
+var iFitH = false
+var iFitL = false
+var iFitLive = false
 var clos = false
 
 class MainActivity : AppCompatActivity() {

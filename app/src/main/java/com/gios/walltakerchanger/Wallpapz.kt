@@ -38,11 +38,22 @@ class Wallpapz : WallpaperService() {
             webViewW.setBackgroundColor(0)
             webViewW.setLayerType(View.LAYER_TYPE_HARDWARE, null)
 
-            webViewW.loadData(
-                "<html><head><style type=text/css>body{margin:auto auto;text-align:center;} body{background-image:url(${liveUrl})!important; background-attachment:fixed; background-position:center; background-size: cover;}  img{display: block; margin: 0 auto; width: 100%;} </style></head><body></body></html>",
-                "text/html",
-                "UTF-8"
-            )
+
+            if (iFitLive) {
+                    webViewW.loadData(
+                        "<html><head><style type=text/css>body{margin:auto auto;text-align:center;} body{background:black;background-image:url(${liveUrl})!important; background-attachment:fixed; background-position:center; background-size: contain;background-repeat: no-repeat;}  img{display: block; margin: 0 auto; width: 100%; height: 100%;} </style></head><body></body></html>",
+                        "text/html",
+                        "UTF-8"
+                    )
+                    new = false
+            } else {
+                    webViewW.loadData(
+                        "<html><head><style type=text/css>body{margin:auto auto;text-align:center;} body{background:black;background-image:url(${liveUrl})!important; background-attachment:fixed; background-position:center; background-size: fixed;}  img{display: block; margin: 0 auto; width: 100%; height: 100%;} </style></head><body></body></html>",
+                        "text/html",
+                        "UTF-8"
+                    )
+                    new = false
+            }
 
             var isSurfaceLocked = false
             val timer = Timer()
@@ -58,13 +69,24 @@ class Wallpapz : WallpaperService() {
                                     if (canvas != null) {
                                         isSurfaceLocked = true
                                         webViewW.draw(canvas)
-                                        if (new) {
-                                            webViewW.loadData(
-                                                "<html><head><style type=text/css>body{margin:auto auto;text-align:center;} body{background-image:url(${liveUrl})!important; background-attachment:fixed; background-position:center; background-size: cover;}  img{display: block; margin: 0 auto; width: 100%; height: 100%;} </style></head><body></body></html>",
-                                                "text/html",
-                                                "UTF-8"
-                                            )
-                                            new = false
+                                        if (iFitLive) {
+                                            if (new) {
+                                                webViewW.loadData(
+                                                    "<html><head><style type=text/css>body{margin:auto auto;text-align:center;} body{background:black;background-image:url(${liveUrl})!important; background-attachment:fixed; background-position:center; background-size: contain;background-repeat: no-repeat;}  img{display: block; margin: 0 auto; width: 100%; height: 100%;} </style></head><body></body></html>",
+                                                    "text/html",
+                                                    "UTF-8"
+                                                )
+                                                new = false
+                                            }
+                                        } else {
+                                            if (new) {
+                                                webViewW.loadData(
+                                                    "<html><head><style type=text/css>body{margin:auto auto;text-align:center;} body{background:black;background-image:url(${liveUrl})!important; background-attachment:fixed; background-position:center; background-size: fixed;}  img{display: block; margin: 0 auto; width: 100%; height: 100%;} </style></head><body></body></html>",
+                                                    "text/html",
+                                                    "UTF-8"
+                                                )
+                                                new = false
+                                            }
                                         }
                                         holder.unlockCanvasAndPost(canvas)
                                         isSurfaceLocked = false

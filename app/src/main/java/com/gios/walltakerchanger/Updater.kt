@@ -4,6 +4,7 @@ import android.app.WallpaperManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.net.Uri
 import android.os.Environment
 import android.os.PowerManager
@@ -39,7 +40,10 @@ class Updater {
             multiMode = sharedPreferences.getBoolean("multimode", false)
             livS = sharedPreferences.getBoolean("liveS", false)
             livM = sharedPreferences.getBoolean("liveM", false)
-
+            iFit = sharedPreferences.getBoolean("iFit", false)
+            iFitH = sharedPreferences.getBoolean("iFitH", false)
+            iFitL = sharedPreferences.getBoolean("iFitL", false)
+            iFitLive = sharedPreferences.getBoolean("iFitLive", false)
             if (livS) {
                 linkId = sharedPreferences.getString("id", "0")
                 linkUrl = "https://walltaker.joi.how/api/links/$linkId.json"
@@ -117,6 +121,13 @@ class Updater {
                                                     bitmap = withContext(Dispatchers.IO) {
                                                         futureTarget.get()
                                                     }
+                                                    if(iFitH) {
+                                                        bitmap = bitmapResizer(
+                                                            bitmap,
+                                                            height,
+                                                            width,
+                                                        )
+                                                    }
                                                     Glide.with(context).clear(futureTarget)
                                                 }
                                                 job.join()
@@ -180,6 +191,13 @@ class Updater {
                                                         .fitCenter().submit(width, height)
                                                 bitmap = withContext(Dispatchers.IO) {
                                                     futureTarget.get()
+                                                }
+                                                if(iFitL) {
+                                                    bitmap = bitmapResizer(
+                                                        bitmap,
+                                                        height,
+                                                        width,
+                                                    )
                                                 }
                                                 Glide.with(context).clear(futureTarget)
                                             }
@@ -249,9 +267,18 @@ class Updater {
                                                 bitmap = withContext(Dispatchers.IO) {
                                                     futureTarget.get()
                                                 }
+                                                if(iFit) {
+                                                    bitmap = bitmapResizer(
+                                                        bitmap,
+                                                        height,
+                                                        width,
+                                                    )
+                                                }
                                                 Glide.with(context).clear(futureTarget)
+
                                             }
                                             job.join()
+
                                             try {
                                                 if (setHome) {
                                                     println("Setting home")
@@ -263,7 +290,6 @@ class Updater {
                                                     )
                                                 }
                                                 if (setLock) {
-
                                                     println("Setting lock")
                                                     wallpaperManager.setBitmap(
                                                         bitmap,
@@ -292,6 +318,17 @@ class Updater {
                         wl.release()
                     }
             }
+        }
+
+        private fun bitmapResizer(bitmap: Bitmap, targetHeight: Int, targetWidth: Int): Bitmap {
+
+            val resizedBitmap = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(resizedBitmap)
+            val left = (targetWidth - bitmap.width) / 2f
+            val top = (targetHeight - bitmap.height) / 2f
+            canvas.drawBitmap(bitmap, left, top, null)
+            return resizedBitmap
+
         }
 
         private fun downloadFile(url: String?) {
