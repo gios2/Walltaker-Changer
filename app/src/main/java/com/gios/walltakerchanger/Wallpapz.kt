@@ -39,20 +39,20 @@ class Wallpapz : WallpaperService() {
             webViewW.setLayerType(View.LAYER_TYPE_HARDWARE, null)
 
 
-            if (iFitLive) {
-                    webViewW.loadData(
-                        "<html><head><style type=text/css>body{margin:auto auto;text-align:center;} body{background:black;background-image:url(${liveUrl})!important; background-attachment:fixed; background-position:center; background-size: contain;background-repeat: no-repeat;}  img{display: block; margin: 0 auto; width: 100%; height: 100%;} </style></head><body></body></html>",
-                        "text/html",
-                        "UTF-8"
-                    )
-                    new = false
+            new = if (iFitLive) {
+                webViewW.loadData(
+                    "<html><head><style type=text/css>body{margin:auto auto;text-align:center;} body{background:black;background-image:url(${liveUrl})!important; background-attachment:fixed; background-position:center; background-size: contain;background-repeat: no-repeat;}  img{display: block; margin: 0 auto; width: 100%; height: 100%;} </style></head><body></body></html>",
+                    "text/html",
+                    "UTF-8"
+                )
+                false
             } else {
-                    webViewW.loadData(
-                        "<html><head><style type=text/css>body{margin:auto auto;text-align:center;} body{background:black;background-image:url(${liveUrl})!important; background-attachment:fixed; background-position:center; background-size: fixed;}  img{display: block; margin: 0 auto; width: 100%; height: 100%;} </style></head><body></body></html>",
-                        "text/html",
-                        "UTF-8"
-                    )
-                    new = false
+                webViewW.loadData(
+                    "<html><head><style type=text/css>body{margin:auto auto;text-align:center;} body{background:black;background-image:url(${liveUrl})!important; background-attachment:fixed; background-position:center; background-size: fixed;}  img{display: block; margin: 0 auto; width: 100%; height: 100%;} </style></head><body></body></html>",
+                    "text/html",
+                    "UTF-8"
+                )
+                false
             }
 
             var isSurfaceLocked = false
@@ -72,7 +72,12 @@ class Wallpapz : WallpaperService() {
                                         if (iFitLive) {
                                             if (new) {
                                                 webViewW.loadData(
-                                                    "<html><head><style type=text/css>body{margin:auto auto;text-align:center;} body{background:black;background-image:url(${liveUrl})!important; background-attachment:fixed; background-position:center; background-size: contain;background-repeat: no-repeat;}  img{display: block; margin: 0 auto; width: 100%; height: 100%;} </style></head><body></body></html>",
+                                                    "<html><head><style type=text/css>body{margin:auto auto;text-align:center;} body{background:black;background-image:black; background-attachment:fixed; background-position:center; background-size: contain;background-repeat: no-repeat;}  img{display: block; margin: 0 auto; width: 100%; height: 100%;} </style></head><body></body></html>",
+                                                    "text/html",
+                                                    "UTF-8"
+                                                )
+                                                webViewW.loadData(
+                                                    "<html><head><style type=text/css>body{margin:auto auto;text-align:center;} body{background:black; background-image:url(${liveUrl})!important; background-attachment:fixed; background-position:center; background-size: contain;background-repeat: no-repeat;}  img{display: block; margin: 0 auto; width: 100%; height: 100%;} </style></head><body></body></html>",
                                                     "text/html",
                                                     "UTF-8"
                                                 )
@@ -80,6 +85,11 @@ class Wallpapz : WallpaperService() {
                                             }
                                         } else {
                                             if (new) {
+                                                webViewW.loadData(
+                                                    "<html><head><style type=text/css>body{margin:auto auto;text-align:center;} body{background:black; background-image:black; background-attachment:fixed; background-position:center; background-size: contain;background-repeat: no-repeat;}  img{display: block; margin: 0 auto; width: 100%; height: 100%;} </style></head><body></body></html>",
+                                                    "text/html",
+                                                    "UTF-8"
+                                                )
                                                 webViewW.loadData(
                                                     "<html><head><style type=text/css>body{margin:auto auto;text-align:center;} body{background:black;background-image:url(${liveUrl})!important; background-attachment:fixed; background-position:center; background-size: fixed;}  img{display: block; margin: 0 auto; width: 100%; height: 100%;} </style></head><body></body></html>",
                                                     "text/html",
