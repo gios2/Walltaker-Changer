@@ -459,10 +459,9 @@ class MainActivity : AppCompatActivity() {
         multiMode = sharedPreferences.getBoolean("multimode", false)
         livS = sharedPreferences.getBoolean("liveS", false)
         livM = sharedPreferences.getBoolean("liveM", false)
-
-        if (linkId!!.toInt() == 0 && !multiMode) {
+        if (linkId == "0" || linkId.isNullOrEmpty() && !multiMode) {
             Toast.makeText(this, "Set a id", Toast.LENGTH_SHORT).show()
-        } else if (multiMode && (linkIdHome == "0" || linkIdLock == "0")) {
+        } else if (multiMode && (linkIdHome == "0" || linkIdLock == "0"|| linkIdHome.isNullOrEmpty() || linkIdHome.isNullOrEmpty())) {
             Toast.makeText(this, "Set a id for multi mode", Toast.LENGTH_SHORT).show()
         } else if (livS || livM) {
             startService(Intent(this, Wallpapz::class.java))
