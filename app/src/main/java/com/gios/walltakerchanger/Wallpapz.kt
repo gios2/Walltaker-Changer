@@ -113,7 +113,7 @@ class Wallpapz : WallpaperService() {
                     }
                 }
             }
-            timer.scheduleAtFixedRate(task, 0, 15)
+            timer.scheduleAtFixedRate(task, 0, 12)
             wl.release()
         }
 

@@ -1,18 +1,10 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory app:title="@string/set_your_id_and_choose_where_to_show_the_wallpaper">
-
         <PreferenceCategory app:title="Single mode">
             <EditTextPreference
                 app:key="id"
                 app:title="@string/id"
-                app:useSimpleSummaryProvider="true" />
-
-            <EditTextPreference
-                app:defaultValue="00000000"
-                app:isPreferenceVisible="false"
-                app:key="api_key"
-                app:title="@string/api_key"
                 app:useSimpleSummaryProvider="true" />
         </PreferenceCategory>
         <SwitchPreferenceCompat
@@ -67,5 +59,14 @@
             app:key="download2"
             app:title="Download" />
     </PreferenceCategory>
-
+    <PreferenceCategory app:title="Panic images">
+        <EditTextPreference
+            app:key="panicHome"
+            app:title="Panic homescreen image"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:key="panicLock"
+            app:title="Panic lockscreen image"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
 </PreferenceScreen>

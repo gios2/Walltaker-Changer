@@ -121,7 +121,7 @@ class Updater {
                                                     bitmap = withContext(Dispatchers.IO) {
                                                         futureTarget.get()
                                                     }
-                                                    if(iFitH) {
+                                                    if (iFitH) {
                                                         bitmap = bitmapResizer(
                                                             bitmap,
                                                             height,
@@ -192,7 +192,7 @@ class Updater {
                                                 bitmap = withContext(Dispatchers.IO) {
                                                     futureTarget.get()
                                                 }
-                                                if(iFitL) {
+                                                if (iFitL) {
                                                     bitmap = bitmapResizer(
                                                         bitmap,
                                                         height,
@@ -267,7 +267,7 @@ class Updater {
                                                 bitmap = withContext(Dispatchers.IO) {
                                                     futureTarget.get()
                                                 }
-                                                if(iFit) {
+                                                if (iFit) {
                                                     bitmap = bitmapResizer(
                                                         bitmap,
                                                         height,
@@ -322,7 +322,8 @@ class Updater {
 
         private fun bitmapResizer(bitmap: Bitmap, targetHeight: Int, targetWidth: Int): Bitmap {
 
-            val resizedBitmap = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888)
+            val resizedBitmap =
+                Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(resizedBitmap)
             val left = (targetWidth - bitmap.width) / 2f
             val top = (targetHeight - bitmap.height) / 2f

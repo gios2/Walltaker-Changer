@@ -98,6 +98,8 @@ var iFitH = false
 var iFitL = false
 var iFitLive = false
 var clos = false
+var panicHome = ""
+var panicLock = ""
 
 class MainActivity : AppCompatActivity() {
 
@@ -393,14 +395,13 @@ class MainActivity : AppCompatActivity() {
             if (livS || livM) {
                 stopService(Intent(this, Wallpapz::class.java))
                 clos = true
-                val wallpaperManager = WallpaperManager.getInstance(this)
                 val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
                 val intent = Intent(this, BroadcastReceiver::class.java)
                 val pendingIntent =
                     PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
                 alarmManager.cancel(pendingIntent)
                 unregisterReceiver(receiver)
-                wallpaperManager.clear()
+                PanicUpdater.pUpdate(this)
                 finishAndRemoveTask()
                 exitProcess(0)
             } else {
@@ -424,29 +425,28 @@ class MainActivity : AppCompatActivity() {
         multiMode = sharedPreferences.getBoolean("multimode", false)
         livS = sharedPreferences.getBoolean("liveS", false)
         livM = sharedPreferences.getBoolean("liveM", false)
+
         stopService(Intent(this, Service::class.java))
         if (livS || livM) {
             stopService(Intent(this, Wallpapz::class.java))
             clos = true
-            val wallpaperManager = WallpaperManager.getInstance(this)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             val intent = Intent(this, BroadcastReceiver::class.java)
             val pendingIntent =
                 PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             alarmManager.cancel(pendingIntent)
             unregisterReceiver(receiver)
-            wallpaperManager.clear()
+            PanicUpdater.pUpdate(this)
             finishAndRemoveTask()
             exitProcess(0)
         }
-        val wallpaperManager = WallpaperManager.getInstance(this)
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, BroadcastReceiver::class.java)
         val pendingIntent =
             PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         alarmManager.cancel(pendingIntent)
         unregisterReceiver(receiver)
-        wallpaperManager.clear()
+        PanicUpdater.pUpdate(this)
         finishAndRemoveTask()
         exitProcess(0)
     }
@@ -461,7 +461,7 @@ class MainActivity : AppCompatActivity() {
         livM = sharedPreferences.getBoolean("liveM", false)
         if (linkId == "0" || linkId.isNullOrEmpty() && !multiMode) {
             Toast.makeText(this, "Set a id", Toast.LENGTH_SHORT).show()
-        } else if (multiMode && (linkIdHome == "0" || linkIdLock == "0"|| linkIdHome.isNullOrEmpty() || linkIdHome.isNullOrEmpty())) {
+        } else if (multiMode && (linkIdHome == "0" || linkIdLock == "0" || linkIdHome.isNullOrEmpty() || linkIdHome.isNullOrEmpty())) {
             Toast.makeText(this, "Set a id for multi mode", Toast.LENGTH_SHORT).show()
         } else if (livS || livM) {
             startService(Intent(this, Wallpapz::class.java))
