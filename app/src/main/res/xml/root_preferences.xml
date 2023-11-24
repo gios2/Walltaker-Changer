@@ -63,10 +63,14 @@
         <EditTextPreference
             app:key="panicHome"
             app:title="Panic homescreen image"
+            app:dialogTitle="Enter image url"
+            app:dialogMessage="must be a link finishing with extension (https://www.example.com/image.png)"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:key="panicLock"
             app:title="Panic lockscreen image"
+            app:dialogTitle="Enter image url"
+            app:dialogMessage="must be a link finishing with extension (https://www.example.com/image.png)"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 </PreferenceScreen>

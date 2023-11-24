@@ -4,6 +4,7 @@ import android.app.WallpaperManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.PowerManager
 import android.util.DisplayMetrics
 import android.view.WindowManager
@@ -15,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import java.io.InputStream
 
 @Suppress("DEPRECATION")
 class PanicUpdater {
@@ -28,17 +30,15 @@ class PanicUpdater {
                 PreferenceManager.getDefaultSharedPreferences(context)
             panicHome = sharedPreferences.getString("panicHome", "")!!
             panicLock = sharedPreferences.getString("panicLock", "")!!
-            val image =
-                "https://i.pinimg.com/originals/dc/b9/03/dcb903fac6f299ad7c85ad9d0e460c7c.jpg"
             if (panicHome.isNotEmpty()) {
                 sett(panicHome, "home", context)
             } else {
-                sett(image, "home", context)
+                settDefault("home", context)
             }
             if (panicLock.isNotEmpty()) {
                 sett(panicLock, "lock", context)
             } else {
-                sett(image, "lock", context)
+                settDefault( "lock", context)
             }
             wl.release()
         }
@@ -69,6 +69,30 @@ class PanicUpdater {
                     Glide.with(context).clear(futureTarget)
                 }
                 job.join()
+                if (where == "home") {
+                    wallpaperManager.setBitmap(
+                        bitmap,
+                        null,
+                        true,
+                        WallpaperManager.FLAG_SYSTEM
+                    )
+                }
+                if (where == "lock") {
+                    wallpaperManager.setBitmap(
+                        bitmap,
+                        null,
+                        true,
+                        WallpaperManager.FLAG_LOCK
+                    )
+                }
+            }
+        }
+        private fun settDefault(where: String, context: Context) {
+            val wallpaperManager = WallpaperManager.getInstance(context)
+            lateinit var bitmap: Bitmap
+            runBlocking {
+                    val ims: InputStream = context.assets.open("dcb903fac6f299ad7c85ad9d0e460c7c.jpg")
+                    bitmap = BitmapFactory.decodeStream(ims)
                 if (where == "home") {
                     wallpaperManager.setBitmap(
                         bitmap,
