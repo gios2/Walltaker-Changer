@@ -449,7 +449,7 @@ class MainActivity : AppCompatActivity() {
         } else if (multiMode && (linkIdHome == "0" || linkIdLock == "0" || linkIdHome.isNullOrEmpty() || linkIdHome.isNullOrEmpty())) {
             Toast.makeText(this, "Set a id for multi mode", Toast.LENGTH_SHORT).show()
         } else if (livS || livM) {
-            Toast.makeText(this, "Stopping Walltaker Changer...", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Starting Walltaker Changer...", Toast.LENGTH_SHORT).show()
 
             startService(Intent(this, Wallpapz::class.java))
             val intent2 = Intent()
