@@ -387,58 +387,14 @@ class MainActivity : AppCompatActivity() {
         multiMode = sharedPreferences.getBoolean("multimode", false)
         livS = sharedPreferences.getBoolean("liveS", false)
         livM = sharedPreferences.getBoolean("liveM", false)
-        if (linkId!!.toInt() == 0) {
-            Toast.makeText(this, "Set a id", Toast.LENGTH_SHORT).show()
-        } else if (multiMode && (linkIdHome == "0" || linkIdLock == "0")) {
-            Toast.makeText(this, "Set a id for multi mode", Toast.LENGTH_SHORT).show()
-        } else {
-            if (livS || livM) {
-                stopService(Intent(this, Wallpapz::class.java))
-                clos = true
-                val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                val intent = Intent(this, BroadcastReceiver::class.java)
-                val pendingIntent =
-                    PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-                alarmManager.cancel(pendingIntent)
-                unregisterReceiver(receiver)
-                PanicUpdater.pUpdate(this)
-                finishAndRemoveTask()
-                exitProcess(0)
-            } else {
-                Toast.makeText(this, "Stopping Walltaker task...", Toast.LENGTH_SHORT).show()
-                val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                val intent = Intent(this, BroadcastReceiver::class.java)
-                val pendingIntent =
-                    PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-                alarmManager.cancel(pendingIntent)
-                unregisterReceiver(receiver)
-                stopService(Intent(this, Service::class.java))
-                finishAndRemoveTask()
-                exitProcess(0)
-            }
-        }
-    }
+        Toast.makeText(this, "Stopping Walltaker Changer...", Toast.LENGTH_SHORT).show()
 
-    private fun panic() {
-        val sharedPreferences: SharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(this)
-        multiMode = sharedPreferences.getBoolean("multimode", false)
-        livS = sharedPreferences.getBoolean("liveS", false)
-        livM = sharedPreferences.getBoolean("liveM", false)
-
-        stopService(Intent(this, Service::class.java))
         if (livS || livM) {
+            val wallpaperManager = WallpaperManager.getInstance(this@MainActivity)
+            wallpaperManager.clear()
+            PanicUpdater.pUpdate(this@MainActivity)
             stopService(Intent(this, Wallpapz::class.java))
             clos = true
-            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            val intent = Intent(this, BroadcastReceiver::class.java)
-            val pendingIntent =
-                PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-            alarmManager.cancel(pendingIntent)
-            unregisterReceiver(receiver)
-            PanicUpdater.pUpdate(this)
-            finishAndRemoveTask()
-            exitProcess(0)
         }
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, BroadcastReceiver::class.java)
@@ -446,9 +402,38 @@ class MainActivity : AppCompatActivity() {
             PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         alarmManager.cancel(pendingIntent)
         unregisterReceiver(receiver)
-        PanicUpdater.pUpdate(this)
+        stopService(Intent(this, Service::class.java))
         finishAndRemoveTask()
         exitProcess(0)
+
+    }
+
+    private fun panic() {
+        runOnUiThread {
+            val sharedPreferences: SharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this@MainActivity)
+            livS = sharedPreferences.getBoolean("liveS", false)
+            livM = sharedPreferences.getBoolean("liveM", false)
+
+            val wallpaperManager = WallpaperManager.getInstance(this@MainActivity)
+            wallpaperManager.clear()
+            PanicUpdater.pUpdate(this@MainActivity)
+
+            stopService(Intent(this@MainActivity, Service::class.java))
+            if (livS || livM) {
+                stopService(Intent(this@MainActivity, Wallpapz::class.java))
+                clos = true
+            }
+            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val intent = Intent(this@MainActivity, BroadcastReceiver::class.java)
+            val pendingIntent =
+                PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+            alarmManager.cancel(pendingIntent)
+            unregisterReceiver(receiver)
+
+            finishAndRemoveTask()
+            exitProcess(0)
+        }
     }
 
 
@@ -464,6 +449,8 @@ class MainActivity : AppCompatActivity() {
         } else if (multiMode && (linkIdHome == "0" || linkIdLock == "0" || linkIdHome.isNullOrEmpty() || linkIdHome.isNullOrEmpty())) {
             Toast.makeText(this, "Set a id for multi mode", Toast.LENGTH_SHORT).show()
         } else if (livS || livM) {
+            Toast.makeText(this, "Stopping Walltaker Changer...", Toast.LENGTH_SHORT).show()
+
             startService(Intent(this, Wallpapz::class.java))
             val intent2 = Intent()
             intent2.action = WallpaperManager.ACTION_LIVE_WALLPAPER_CHOOSER
@@ -482,6 +469,8 @@ class MainActivity : AppCompatActivity() {
                 exitProcess(0)
             }
         } else {
+            Toast.makeText(this, "Stopping Walltaker Changer...", Toast.LENGTH_SHORT).show()
+
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             val intent = Intent(this, BroadcastReceiver::class.java)
             val pendingIntent =
