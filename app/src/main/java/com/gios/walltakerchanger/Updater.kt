@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Matrix
+import android.graphics.RectF
 import android.net.Uri
 import android.os.Environment
 import android.os.PowerManager
@@ -21,6 +23,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.File
+
 
 var liveUrl = ""
 
@@ -115,17 +118,26 @@ class Updater {
                                                     val height = displayMetrics.heightPixels
 
                                                     val futureTarget: FutureTarget<Bitmap> =
-                                                        Glide.with(context).asBitmap()
+                                                        Glide.with(context)
+                                                            .asBitmap()
                                                             .load(post_url_home)
-                                                            .fitCenter().submit(width, height)
+                                                            .fitCenter()
+                                                            .submit(width, height)
                                                     bitmap = withContext(Dispatchers.IO) {
                                                         futureTarget.get()
                                                     }
                                                     if (iFitH) {
-                                                        bitmap = bitmapResizer(
+                                                        bitmap =
+                                                            bitmapResizer(
+                                                                bitmap,
+                                                                height,
+                                                                width,
+                                                            )
+                                                    } else {
+                                                        returnBitmap(
                                                             bitmap,
-                                                            height,
                                                             width,
+                                                            height
                                                         )
                                                     }
                                                     Glide.with(context).clear(futureTarget)
@@ -185,10 +197,11 @@ class Updater {
                                                 val height = displayMetrics.heightPixels
 
                                                 val futureTarget: FutureTarget<Bitmap> =
-                                                    Glide.with(context).asBitmap().load(
-                                                        post_url_lock
-                                                    )
-                                                        .fitCenter().submit(width, height)
+                                                    Glide.with(context)
+                                                        .asBitmap()
+                                                        .load(post_url_lock)
+                                                        .fitCenter()
+                                                        .submit(width, height)
                                                 bitmap = withContext(Dispatchers.IO) {
                                                     futureTarget.get()
                                                 }
@@ -197,6 +210,13 @@ class Updater {
                                                         bitmap,
                                                         height,
                                                         width,
+                                                    )
+
+                                                } else {
+                                                    returnBitmap(
+                                                        bitmap,
+                                                        width,
+                                                        height
                                                     )
                                                 }
                                                 Glide.with(context).clear(futureTarget)
@@ -260,23 +280,35 @@ class Updater {
                                                 val height = displayMetrics.heightPixels
 
                                                 val futureTarget: FutureTarget<Bitmap> =
-                                                    Glide.with(context).asBitmap()
+                                                    Glide.with(context)
+                                                        .asBitmap()
                                                         .load(post_url)
-                                                        .fitCenter()
-                                                        .submit(width, height)
+                                                        .submit(
+                                                            wallpaperManager.desiredMinimumWidth,
+                                                            wallpaperManager.desiredMinimumHeight
+                                                        )
+
+
+
                                                 bitmap = withContext(Dispatchers.IO) {
                                                     futureTarget.get()
                                                 }
-                                                if (iFit) {
-                                                    bitmap = bitmapResizer(
+                                                bitmap = if (iFit) {
+                                                    bitmapResizer(
                                                         bitmap,
                                                         height,
                                                         width,
                                                     )
+                                                } else {
+                                                    returnBitmap(
+                                                        bitmap,
+                                                        width,
+                                                        height
+                                                    )
                                                 }
-                                                Glide.with(context).clear(futureTarget)
 
                                             }
+
                                             job.join()
 
                                             try {
@@ -330,6 +362,24 @@ class Updater {
             canvas.drawBitmap(bitmap, left, top, null)
             return resizedBitmap
 
+        }
+
+        private fun returnBitmap(targetBmp: Bitmap, height: Int, width: Int): Bitmap {
+            val matrix = Matrix()
+            matrix.setRectToRect(
+                RectF(0f, 0f, targetBmp.width.toFloat(), targetBmp.height.toFloat()),
+                RectF(0f, 0f, width.toFloat(), height.toFloat()),
+                Matrix.ScaleToFit.CENTER
+            )
+            return Bitmap.createBitmap(
+                targetBmp,
+                0,
+                0,
+                targetBmp.width,
+                targetBmp.height,
+                matrix,
+                true
+            )
         }
 
         private fun downloadFile(url: String?) {
