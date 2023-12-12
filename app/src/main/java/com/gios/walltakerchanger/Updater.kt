@@ -95,8 +95,9 @@ class Updater {
                             if (livM) {
                                 if (data != null) {
                                     post_url = data.post_url
+                                    live_set_by = data.set_by
+
                                     if (liveUrl != post_url) {
-                                        live_set_by = data.set_by
                                         if (notifi) {
                                             notifier(context)
                                         }
@@ -288,12 +289,12 @@ class Updater {
                             if (data != null) {
                                 post_url = data.post_url
                                 set_by = data.set_by
-
+                                if (notifi) {
+                                    notifier(context)
+                                }
                                 if (post_url != "null" && post_url.isNotEmpty()) {
                                     if (post_url != lastUrl) {
-                                        if (notifi) {
-                                            notifier(context)
-                                        }
+
                                         lateinit var bitmap: Bitmap
                                         val wallpaperManager =
                                             WallpaperManager.getInstance(context)
@@ -383,11 +384,12 @@ class Updater {
             val notificationManager =
                 context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
+            val id = "walltaker_changer"
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val channel = NotificationChannel(
-                    "Walltaker_Changer",
-                    "Walltaker Changer",
+                    id,
+                    "Walltaker Changer notification",
                     NotificationManager.IMPORTANCE_DEFAULT
                 )
                 notificationManager.createNotificationChannel(channel)
@@ -395,7 +397,7 @@ class Updater {
 
 
             val builder: NotificationCompat.Builder =
-                NotificationCompat.Builder(context, "walltaker_changer")
+                NotificationCompat.Builder(context, id)
                     .setSmallIcon(R.mipmap.ic_launcher_foreground)
                     .setContentTitle("Setting Wallpaper")
                     .setContentText(
