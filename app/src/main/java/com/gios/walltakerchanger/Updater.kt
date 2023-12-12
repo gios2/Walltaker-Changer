@@ -1,17 +1,22 @@
 package com.gios.walltakerchanger
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.WallpaperManager
 import android.content.Context
+import android.content.Context.NOTIFICATION_SERVICE
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.RectF
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import android.os.PowerManager
 import android.util.DisplayMetrics
 import android.view.WindowManager
+import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
@@ -24,8 +29,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.io.File
 
-
-var liveUrl = ""
 
 @Suppress("DEPRECATION")
 class Updater {
@@ -47,6 +50,8 @@ class Updater {
             iFitH = sharedPreferences.getBoolean("iFitH", false)
             iFitL = sharedPreferences.getBoolean("iFitL", false)
             iFitLive = sharedPreferences.getBoolean("iFitLive", false)
+            notifi = sharedPreferences.getBoolean("notifi", false)
+
             if (livS) {
                 linkId = sharedPreferences.getString("id", "0")
                 linkUrl = "https://walltaker.joi.how/api/links/$linkId.json"
@@ -58,15 +63,19 @@ class Updater {
                             if (data != null) {
                                 post_url = data.post_url
                                 if (liveUrl != post_url) {
-                                    if (post_url != "null" && !post_url.isNullOrEmpty()) {
+                                    if (post_url != "" && post_url.isNotEmpty()) {
                                         if (sharedPreferences.getBoolean("download", false)) {
                                             downloadFile(
-                                                post_url!!
+                                                post_url
                                             )
                                         }
                                     }
                                     new = true
                                     liveUrl = data.post_url
+                                    live_set_by = data.set_by
+                                    if (notifi) {
+                                        notifier(context)
+                                    }
                                 }
                             }
                         } else {
@@ -86,23 +95,31 @@ class Updater {
                                 if (data != null) {
                                     post_url = data.post_url
                                     if (liveUrl != post_url) {
-                                        if (post_url != "null" && !post_url.isNullOrEmpty()) {
+                                        if (post_url != "" && post_url.isNotEmpty()) {
                                             if (sharedPreferences.getBoolean("download", false)) {
                                                 downloadFile(
-                                                    post_url!!
+                                                    post_url
                                                 )
                                             }
                                         }
                                         new = true
                                         liveUrl = data.post_url
+                                        live_set_by = data.set_by
+                                        if (notifi) {
+                                            notifier(context)
+                                        }
                                     }
                                 }
                             } else {
                                 if (data != null) {
                                     post_url_home = data.post_url
+                                    set_by_home = data.set_by
 
-                                    if (post_url_home != "null" && !post_url_home.isNullOrEmpty()) {
+                                    if (post_url_home != "" && post_url_home.isNotEmpty()) {
                                         if (post_url_home != lastUrlHome) {
+                                            if (notifi) {
+                                                notifier(context)
+                                            }
                                             lateinit var bitmap: Bitmap
                                             val wallpaperManager =
                                                 WallpaperManager.getInstance(context)
@@ -156,14 +173,14 @@ class Updater {
                                                 }
                                             }
                                         }
-                                        lastUrlHome = data.post_url
+
                                         if (sharedPreferences.getBoolean("download1", false)) {
                                             downloadFile(
-                                                post_url_home!!
+                                                post_url_home
                                             )
                                         }
                                     }
-
+                                    lastUrlHome = data.post_url
                                 }
                             }
                         } else {
@@ -180,9 +197,13 @@ class Updater {
                             val data = gson.fromJson(result2.get(), LinkData::class.java)
                             if (data != null) {
                                 post_url_lock = data.post_url
+                                set_by_lock = data.set_by
 
-                                if (post_url_lock != "null" && !post_url_lock.isNullOrEmpty()) {
+                                if (post_url_lock != "" && post_url_lock.isNotEmpty()) {
                                     if (post_url_lock != lastUrlLock) {
+                                        if (notifi) {
+                                            notifier(context)
+                                        }
                                         lateinit var bitmap: Bitmap
                                         val wallpaperManager = WallpaperManager.getInstance(context)
                                         runBlocking {
@@ -235,9 +256,10 @@ class Updater {
                                                 lastUrlLock = ""
                                             }
                                         }
+
                                         if (sharedPreferences.getBoolean("download2", false)) {
                                             downloadFile(
-                                                post_url_lock!!
+                                                post_url_lock
                                             )
                                         }
                                     }
@@ -247,6 +269,7 @@ class Updater {
 
                             }
                         }
+
                     }
 
             } else {
@@ -262,9 +285,13 @@ class Updater {
                             val data = gson.fromJson(result.get(), LinkData::class.java)
                             if (data != null) {
                                 post_url = data.post_url
+                                set_by = data.set_by
 
-                                if (post_url != "null" && !post_url.isNullOrEmpty()) {
+                                if (post_url != "null" && post_url.isNotEmpty()) {
                                     if (post_url != lastUrl) {
+                                        if (notifi) {
+                                            notifier(context)
+                                        }
                                         lateinit var bitmap: Bitmap
                                         val wallpaperManager =
                                             WallpaperManager.getInstance(context)
@@ -287,8 +314,6 @@ class Updater {
                                                             wallpaperManager.desiredMinimumWidth,
                                                             wallpaperManager.desiredMinimumHeight
                                                         )
-
-
 
                                                 bitmap = withContext(Dispatchers.IO) {
                                                     futureTarget.get()
@@ -337,7 +362,7 @@ class Updater {
                                         }
                                         if (sharedPreferences.getBoolean("download", false)) {
                                             downloadFile(
-                                                post_url!!
+                                                post_url
                                             )
                                         }
                                     }
@@ -350,6 +375,44 @@ class Updater {
                         wl.release()
                     }
             }
+        }
+
+        private fun notifier(context: Context) {
+            val notificationManager =
+                context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val channel = NotificationChannel(
+                    "Walltaker_Changer",
+                    "Walltaker Changer",
+                    NotificationManager.IMPORTANCE_DEFAULT
+                )
+                notificationManager.createNotificationChannel(channel)
+            }
+
+
+            val builder: NotificationCompat.Builder =
+                NotificationCompat.Builder(context, "walltaker_changer")
+                    .setSmallIcon(R.mipmap.ic_launcher_foreground)
+                    .setContentTitle("Setting Wallpaper")
+                    .setContentText(
+                        if (multiMode) {
+                            if (livM) {
+                                "Live wallpaper setted by $live_set_by | Locksceen setted by $set_by_lock"
+                            } else {
+                                "Homescreen setted by $set_by_home | Locksceen setted by $set_by_lock"
+                            }
+                        } else {
+                            if (livS) {
+                                "Wallpaper setted by $live_set_by"
+                            } else {
+                                "Wallpaper setted by $set_by"
+                            }
+                        }
+                    )
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            notificationManager.notify(0, builder.build())
         }
 
         private fun bitmapResizer(bitmap: Bitmap, targetHeight: Int, targetWidth: Int): Bitmap {

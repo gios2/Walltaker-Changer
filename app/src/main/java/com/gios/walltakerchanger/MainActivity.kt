@@ -76,14 +76,20 @@ var id: String? = null
 var username: String? = null
 var terms: String? = null
 var blacklist: String? = null
-var post_url: String? = ""
-var post_url_home: String? = null
-var post_url_lock: String? = null
+
+var post_url: String = ""
+var set_by: String = ""
+
+var post_url_home: String = ""
+var set_by_home: String = ""
+
+var post_url_lock: String = ""
+var set_by_lock: String = ""
+
 var post_thumbnail_url: String? = null
 var post_description: String? = null
 
 var updated_at: String? = null
-var set_by: String? = null
 var response_type: String? = null
 var response_text: String? = null
 
@@ -100,6 +106,10 @@ var iFitLive = false
 var clos = false
 var panicHome = ""
 var panicLock = ""
+var notifi =false
+var liveUrl = ""
+var live_set_by = ""
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -192,7 +202,7 @@ class MainActivity : AppCompatActivity() {
                         if (response.statusCode == 200) {
                             val gson = GsonBuilder().create()
                             val data = gson.fromJson(result.get(), LinkData::class.java)
-                            post_url_home = null
+                            post_url_home = ""
                             if (data != null) {
                                 id = data.id
                                 //expires = data.expires
@@ -217,7 +227,7 @@ class MainActivity : AppCompatActivity() {
                                             "HomeScreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
                                     }
                                 }
-                                if (post_url_home != null) {
+                                if (post_url_home != "") {
                                     val handler = Handler(Looper.getMainLooper())
                                     handler.post {
                                         imageHome.scaleType = ImageView.ScaleType.CENTER_INSIDE
@@ -235,7 +245,7 @@ class MainActivity : AppCompatActivity() {
                                 if (response2.statusCode == 200) {
                                     val gson = GsonBuilder().create()
                                     val data = gson.fromJson(result2.get(), LinkData::class.java)
-                                    post_url_lock = null
+                                    post_url_lock = ""
                                     if (data != null) {
                                         id = data.id
                                         //expires = data.expires
@@ -260,7 +270,7 @@ class MainActivity : AppCompatActivity() {
                                                     "Lockscreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
                                             }
                                         }
-                                        if (post_url_lock != null) {
+                                        if (post_url_lock != "") {
                                             val handler = Handler(Looper.getMainLooper())
                                             handler.post {
                                                 imageHome.scaleType =
@@ -283,7 +293,7 @@ class MainActivity : AppCompatActivity() {
                         if (response.statusCode == 200) {
                             val gson = GsonBuilder().create()
                             val data = gson.fromJson(result.get(), LinkData::class.java)
-                            post_url = null
+                            post_url = ""
                             if (data != null) {
                                 id = data.id
                                 //expires = data.expires
@@ -309,7 +319,7 @@ class MainActivity : AppCompatActivity() {
                                             "You are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
                                     }
                                 }
-                                if (post_url != null) {
+                                if (post_url != "") {
                                     val handler = Handler(Looper.getMainLooper())
                                     handler.post {
                                         imageHome.scaleType = ImageView.ScaleType.CENTER_INSIDE
