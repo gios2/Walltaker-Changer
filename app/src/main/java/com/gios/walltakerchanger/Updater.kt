@@ -403,9 +403,9 @@ class Updater {
                     .setContentText(
                         if (multiMode) {
                             if (livM) {
-                                "Live wallpaper setted by $live_set_by | Locksceen setted by $set_by_lock"
+                                "Live wallpaper setted by $live_set_by | Lockscreen setted by $set_by_lock"
                             } else {
-                                "Homescreen setted by $set_by_home | Locksceen setted by $set_by_lock"
+                                "Homescreen setted by $set_by_home | Lockscreen setted by $set_by_lock"
                             }
                         } else {
                             if (livS) {
