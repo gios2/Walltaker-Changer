@@ -63,6 +63,10 @@ class Updater {
                             if (data != null) {
                                 post_url = data.post_url
                                 if (liveUrl != post_url) {
+                                    live_set_by = data.set_by
+                                    if (notifi) {
+                                        notifier(context)
+                                    }
                                     if (post_url != "" && post_url.isNotEmpty()) {
                                         if (sharedPreferences.getBoolean("download", false)) {
                                             downloadFile(
@@ -72,10 +76,7 @@ class Updater {
                                     }
                                     new = true
                                     liveUrl = data.post_url
-                                    live_set_by = data.set_by
-                                    if (notifi) {
-                                        notifier(context)
-                                    }
+
                                 }
                             }
                         } else {
@@ -95,6 +96,10 @@ class Updater {
                                 if (data != null) {
                                     post_url = data.post_url
                                     if (liveUrl != post_url) {
+                                        live_set_by = data.set_by
+                                        if (notifi) {
+                                            notifier(context)
+                                        }
                                         if (post_url != "" && post_url.isNotEmpty()) {
                                             if (sharedPreferences.getBoolean("download", false)) {
                                                 downloadFile(
@@ -104,10 +109,7 @@ class Updater {
                                         }
                                         new = true
                                         liveUrl = data.post_url
-                                        live_set_by = data.set_by
-                                        if (notifi) {
-                                            notifier(context)
-                                        }
+
                                     }
                                 }
                             } else {
