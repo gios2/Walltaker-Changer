@@ -77,14 +77,14 @@ var username: String? = null
 var terms: String? = null
 var blacklist: String? = null
 
-var post_url: String = ""
-var set_by: String = ""
+var post_url: String? = null
+var set_by: String? = null
 
-var post_url_home: String = ""
-var set_by_home: String = ""
+var post_url_home: String? = null
+var set_by_home: String? = null
 
-var post_url_lock: String = ""
-var set_by_lock: String = ""
+var post_url_lock: String? = null
+var set_by_lock: String? = null
 
 var post_thumbnail_url: String? = null
 var post_description: String? = null
@@ -107,8 +107,8 @@ var clos = false
 var panicHome = ""
 var panicLock = ""
 var notifi =false
-var liveUrl = ""
-var live_set_by = ""
+var liveUrl:String? = null
+var live_set_by:String? = null
 
 
 class MainActivity : AppCompatActivity() {
@@ -479,7 +479,7 @@ class MainActivity : AppCompatActivity() {
                 exitProcess(0)
             }
         } else {
-            Toast.makeText(this, "Stopping Walltaker Changer...", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Starting Walltaker Changer...", Toast.LENGTH_SHORT).show()
 
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             val intent = Intent(this, BroadcastReceiver::class.java)

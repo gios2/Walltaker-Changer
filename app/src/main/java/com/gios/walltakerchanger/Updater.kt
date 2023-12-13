@@ -57,17 +57,18 @@ class Updater {
                 linkUrl = "https://walltaker.joi.how/api/links/$linkId.json"
                 linkUrl!!.httpGet().header("User-Agent" to "Walltaker-Changer/")
                     .responseString { _, response, result ->
+                        println(response)
                         if (response.statusCode == 200) {
                             val gson = GsonBuilder().create()
                             val data = gson.fromJson(result.get(), LinkData::class.java)
                             if (data != null) {
                                 post_url = data.post_url
-                                if (liveUrl != post_url) {
+                                if (!post_url.isNullOrEmpty() && liveUrl != post_url) {
                                     live_set_by = data.set_by
-                                    if (notifi) {
+                                    if (notifi && !live_set_by.isNullOrEmpty()) {
                                         notifier(context)
                                     }
-                                    if (post_url != "" && post_url.isNotEmpty()) {
+                                    if (!post_url.isNullOrEmpty()) {
                                         if (sharedPreferences.getBoolean("download", false)) {
                                             downloadFile(
                                                 post_url
@@ -76,14 +77,15 @@ class Updater {
                                     }
                                     new = true
                                     liveUrl = data.post_url
-
                                 }
                             }
                         } else {
                             println("error on json request: ${response.statusCode}")
+                            println(response)
                         }
                     }
                 wl.release()
+
             } else if (multiMode) {
                 linkIdHome = sharedPreferences.getString("IdHome", "0")
                 linkUrlHome = "https://walltaker.joi.how/api/links/$linkIdHome.json"
@@ -98,10 +100,10 @@ class Updater {
                                     live_set_by = data.set_by
 
                                     if (liveUrl != post_url) {
-                                        if (notifi) {
-                                            notifier(context)
-                                        }
-                                        if (post_url != "" && post_url.isNotEmpty()) {
+                                        if (!post_url.isNullOrEmpty()) {
+                                            if (notifi&&!live_set_by.isNullOrEmpty()) {
+                                                notifier(context)
+                                            }
                                             if (sharedPreferences.getBoolean("download", false)) {
                                                 downloadFile(
                                                     post_url
@@ -118,9 +120,9 @@ class Updater {
                                     post_url_home = data.post_url
                                     set_by_home = data.set_by
 
-                                    if (post_url_home != "" && post_url_home.isNotEmpty()) {
+                                    if (!post_url_home.isNullOrEmpty()) {
                                         if (post_url_home != lastUrlHome) {
-                                            if (notifi) {
+                                            if (notifi&& !set_by_home.isNullOrEmpty()) {
                                                 notifier(context)
                                             }
                                             lateinit var bitmap: Bitmap
@@ -188,6 +190,7 @@ class Updater {
                             }
                         } else {
                             println("error on home json request: ${response.statusCode}")
+                            println(response)
                         }
                         wl.release()
                     }
@@ -202,9 +205,9 @@ class Updater {
                                 post_url_lock = data.post_url
                                 set_by_lock = data.set_by
 
-                                if (post_url_lock != "" && post_url_lock.isNotEmpty()) {
+                                if (!post_url_lock.isNullOrEmpty()) {
                                     if (post_url_lock != lastUrlLock) {
-                                        if (notifi) {
+                                        if (notifi&&!set_by_lock.isNullOrEmpty()) {
                                             notifier(context)
                                         }
                                         lateinit var bitmap: Bitmap
@@ -229,13 +232,12 @@ class Updater {
                                                 bitmap = withContext(Dispatchers.IO) {
                                                     futureTarget.get()
                                                 }
-                                                if (iFitL) {
-                                                    bitmap = bitmapResizer(
+                                                bitmap = if (iFitL) {
+                                                    bitmapResizer(
                                                         bitmap,
                                                         height,
                                                         width,
                                                     )
-
                                                 } else {
                                                     returnBitmap(
                                                         bitmap,
@@ -289,12 +291,12 @@ class Updater {
                             if (data != null) {
                                 post_url = data.post_url
                                 set_by = data.set_by
-                                if (notifi) {
-                                    notifier(context)
-                                }
-                                if (post_url != "null" && post_url.isNotEmpty()) {
-                                    if (post_url != lastUrl) {
 
+                                if (!post_url.isNullOrEmpty()) {
+                                    if (post_url != lastUrl) {
+                                        if (notifi&&!set_by.isNullOrEmpty()) {
+                                            notifier(context)
+                                        }
                                         lateinit var bitmap: Bitmap
                                         val wallpaperManager =
                                             WallpaperManager.getInstance(context)
@@ -314,8 +316,8 @@ class Updater {
                                                         .asBitmap()
                                                         .load(post_url)
                                                         .submit(
-                                                            wallpaperManager.desiredMinimumWidth,
-                                                            wallpaperManager.desiredMinimumHeight
+                                                            width,
+                                                            height
                                                         )
 
                                                 bitmap = withContext(Dispatchers.IO) {
@@ -374,6 +376,7 @@ class Updater {
                             }
                         } else {
                             println("error on json request: ${response.statusCode}")
+                            println(response)
                         }
                         wl.release()
                     }
@@ -394,7 +397,6 @@ class Updater {
                 )
                 notificationManager.createNotificationChannel(channel)
             }
-
 
             val builder: NotificationCompat.Builder =
                 NotificationCompat.Builder(context, id)
