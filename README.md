@@ -37,6 +37,10 @@ Click update after changing the link number
 
 Click **allow** in in every window that pops up the first time you launch the app otherwise it won't work
 
+If you want to send me a tip:
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/gios2)
+
 **Special thanks**
 
 Thanks to [Lycraon](https://github.com/Lycraon) for providing his code for the project
