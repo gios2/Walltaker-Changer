@@ -57,7 +57,6 @@ class Updater {
                 linkUrl = "https://walltaker.joi.how/api/links/$linkId.json"
                 linkUrl!!.httpGet().header("User-Agent" to "Walltaker-Changer/")
                     .responseString { _, response, result ->
-                        println(response)
                         if (response.statusCode == 200) {
                             val gson = GsonBuilder().create()
                             val data = gson.fromJson(result.get(), LinkData::class.java)

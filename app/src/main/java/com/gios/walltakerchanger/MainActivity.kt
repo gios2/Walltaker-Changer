@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.app.WallpaperManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -35,6 +36,7 @@ import com.google.gson.GsonBuilder
 import java.util.Timer
 import kotlin.concurrent.schedule
 import kotlin.system.exitProcess
+
 
 @SuppressLint("StaticFieldLeak")
 lateinit var imageHome: ImageView
@@ -462,9 +464,12 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Starting Walltaker Changer...", Toast.LENGTH_SHORT).show()
 
             startService(Intent(this, Wallpapz::class.java))
-            val intent2 = Intent()
-            intent2.action = WallpaperManager.ACTION_LIVE_WALLPAPER_CHOOSER
+
+            val component = ComponentName(packageName, "$packageName.Wallpapz")
+            val intent2 = Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER)
+            intent2.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT, component)
             startActivity(intent2)
+
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             val intent = Intent(this, BroadcastReceiver::class.java)
             val pendingIntent =
