@@ -64,7 +64,7 @@ class Updater {
                                 post_url = data.post_url
                                 if (!post_url.isNullOrEmpty() && liveUrl != post_url) {
                                     live_set_by = data.set_by
-                                    if (notifi && !live_set_by.isNullOrEmpty()) {
+                                    if (notifi) {
                                         notifier(context)
                                     }
                                     if (!post_url.isNullOrEmpty()) {
@@ -100,7 +100,7 @@ class Updater {
 
                                     if (liveUrl != post_url) {
                                         if (!post_url.isNullOrEmpty()) {
-                                            if (notifi&&!live_set_by.isNullOrEmpty()) {
+                                            if (notifi && !live_set_by.isNullOrEmpty()) {
                                                 notifier(context)
                                             }
                                             if (sharedPreferences.getBoolean("download", false)) {
@@ -121,7 +121,7 @@ class Updater {
 
                                     if (!post_url_home.isNullOrEmpty()) {
                                         if (post_url_home != lastUrlHome) {
-                                            if (notifi&& !set_by_home.isNullOrEmpty()) {
+                                            if (notifi) {
                                                 notifier(context)
                                             }
                                             lateinit var bitmap: Bitmap
@@ -206,7 +206,7 @@ class Updater {
 
                                 if (!post_url_lock.isNullOrEmpty()) {
                                     if (post_url_lock != lastUrlLock) {
-                                        if (notifi&&!set_by_lock.isNullOrEmpty()) {
+                                        if (notifi) {
                                             notifier(context)
                                         }
                                         lateinit var bitmap: Bitmap
@@ -293,7 +293,7 @@ class Updater {
 
                                 if (!post_url.isNullOrEmpty()) {
                                     if (post_url != lastUrl) {
-                                        if (notifi&&!set_by.isNullOrEmpty()) {
+                                        if (notifi) {
                                             notifier(context)
                                         }
                                         lateinit var bitmap: Bitmap
@@ -402,19 +402,43 @@ class Updater {
                     .setSmallIcon(R.mipmap.ic_launcher_foreground)
                     .setContentTitle("Setting Wallpaper")
                     .setContentText(
-                        if (multiMode) {
+                        ((if (multiMode) {
                             if (livM) {
-                                "Live wallpaper set by $live_set_by | Lockscreen set by $set_by_lock"
+                                if (live_set_by.isNullOrEmpty() && !set_by_lock.isNullOrEmpty()) {
+                                    "Live wallpaper set by an anonymous user | Lockscreen set by $set_by_lock"
+                                } else if (!live_set_by.isNullOrEmpty() && set_by_lock.isNullOrEmpty()) {
+                                    "Live wallpaper set by $live_set_by | Lockscreen set by an anonymous user"
+                                } else if (live_set_by.isNullOrEmpty() && set_by_lock.isNullOrEmpty()) {
+                                    "Live wallpaper set by an anonymous user | Lockscreen set by an anonymous user"
+                                } else {
+                                    "Live wallpaper set by $live_set_by | Lockscreen set by $set_by_lock"
+                                }
                             } else {
-                                "Homescreen set by $set_by_home | Lockscreen set by $set_by_lock"
+                                if (set_by_home.isNullOrEmpty() && !set_by_lock.isNullOrEmpty()) {
+                                    "Live wallpaper set by an anonymous user | Lockscreen set by $set_by_lock"
+                                } else if (!set_by_home.isNullOrEmpty() && set_by_lock.isNullOrEmpty()) {
+                                    "Live wallpaper set by $live_set_by | Lockscreen set by an anonymous user"
+                                } else if (set_by_home.isNullOrEmpty() && set_by_lock.isNullOrEmpty()) {
+                                    "Live wallpaper set by an anonymous user | Lockscreen set by an anonymous user"
+                                } else {
+                                    "Live wallpaper set by $set_by_home | Lockscreen set by $set_by_lock"
+                                }
                             }
                         } else {
                             if (livS) {
-                                "Wallpaper set by $live_set_by"
+                                if (live_set_by.isNullOrEmpty()) {
+                                    "Wallpaper set by an anonymous user"
+                                } else {
+                                    "Wallpaper set by $live_set_by"
+                                }
                             } else {
-                                "Wallpaper set by $set_by"
+                                if (set_by.isNullOrEmpty()) {
+                                    "Wallpaper set by an anonymous user"
+                                } else {
+                                    "Wallpaper set by $set_by"
+                                }
                             }
-                        }
+                        }).toString())
                     )
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             notificationManager.notify(0, builder.build())

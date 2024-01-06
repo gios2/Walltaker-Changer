@@ -108,9 +108,9 @@ var iFitLive = false
 var clos = false
 var panicHome = ""
 var panicLock = ""
-var notifi =false
-var liveUrl:String? = null
-var live_set_by:String? = null
+var notifi = false
+var liveUrl: String? = null
+var live_set_by: String? = null
 
 
 class MainActivity : AppCompatActivity() {
@@ -223,10 +223,18 @@ class MainActivity : AppCompatActivity() {
                                 runOnUiThread {
                                     if (post_description != "") {
                                         textHome.text =
-                                            "HomeScreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe post description is $post_description\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                            if (set_by.isNullOrEmpty()) {
+                                                "HomeScreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by an anonymous user\n\nThe post description is $post_description\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                            } else {
+                                                "HomeScreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe post description is $post_description\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                            }
                                     } else {
                                         textHome.text =
-                                            "HomeScreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                            if (set_by.isNullOrEmpty()) {
+                                                "HomeScreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by an anonymous user\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                            } else {
+                                                "HomeScreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                            }
                                     }
                                 }
                                 if (post_url_home != "") {
@@ -266,10 +274,18 @@ class MainActivity : AppCompatActivity() {
                                         runOnUiThread {
                                             if (post_description != "") {
                                                 textLock.text =
-                                                    "Lockscreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe post description is $post_description\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                                    if (set_by.isNullOrEmpty()) {
+                                                        "Lockscreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by an anonymous user\n\nThe post description is $post_description\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                                    } else {
+                                                        "Lockscreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe post description is $post_description\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                                    }
                                             } else {
                                                 textLock.text =
-                                                    "Lockscreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                                    if (set_by.isNullOrEmpty()) {
+                                                        "Lockscreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by an anonymous user\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                                    } else {
+                                                        "Lockscreen Link\nYou are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                                    }
                                             }
                                         }
                                         if (post_url_lock != "") {
@@ -313,12 +329,19 @@ class MainActivity : AppCompatActivity() {
                                 //online = data.online
                                 runOnUiThread {
                                     if (post_description != "") {
-
                                         textHome.text =
-                                            "You are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe post description is $post_description\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                            if (set_by.isNullOrEmpty()) {
+                                                "You are using $username's id $id\n\nThe wallpaper has been set by an anonymous user\n\nThe post description is $post_description\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                            } else {
+                                                "You are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe post description is $post_description\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                            }
                                     } else {
                                         textHome.text =
-                                            "You are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                            if (set_by.isNullOrEmpty()) {
+                                                "You are using $username's id $id\n\nThe wallpaper has been set by an anonymous user\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                            } else {
+                                                "You are using $username's id $id\n\nThe wallpaper has been set by $set_by\n\nThe link terms are: $terms\n\nThe blacklist tags are: $blacklist"
+                                            }
                                     }
                                 }
                                 if (post_url != "") {
