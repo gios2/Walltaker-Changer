@@ -16,18 +16,10 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-    applicationVariants.configureEach { variant ->
-        variant.outputs.configureEach {
-            def appId = variant.applicationId.replace("com.gios.","").replace("w","W").replace("c","C").replace("r","r.")
-            def versionName = variant.versionName
-            outputFileName = "${appId}v${versionName}.apk"
         }
     }
     compileOptions {
