@@ -12,7 +12,7 @@ android {
         minSdk 24
         targetSdk 34
         versionCode 1
-        versionName "3.0.13"
+        versionName "3.0.14"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -21,6 +21,13 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    applicationVariants.configureEach { variant ->
+        variant.outputs.configureEach {
+            def appId = variant.applicationId.replace("com.gios.","").replace("w","W").replace("c","C").replace("r","r.")
+            def versionName = variant.versionName
+            outputFileName = "${appId}v${versionName}.apk"
         }
     }
     compileOptions {

@@ -111,7 +111,7 @@ var panicLock = ""
 var notifi = false
 var liveUrl: String? = null
 var live_set_by: String? = null
-
+var versio: String = "0"
 
 class MainActivity : AppCompatActivity() {
 
@@ -122,6 +122,7 @@ class MainActivity : AppCompatActivity() {
         storagePerm()
         ignoreBatteryOptimization()
 
+        version()
         orientation()
         theme()
         obtainWallpaper()
@@ -156,6 +157,10 @@ class MainActivity : AppCompatActivity() {
             reset()
             obtainWallpaper()
         }
+    }
+
+    private fun version() {
+        versio = this.packageManager.getPackageInfo(this.packageName, 0).versionName
     }
 
     private fun reset() {
@@ -199,7 +204,7 @@ class MainActivity : AppCompatActivity() {
         linkUrlLock = "https://walltaker.joi.how/api/links/$linkIdLock.json"
         runOnUiThread {
             if (multiMode) {
-                linkUrlHome!!.httpGet().header("User-Agent" to "Walltaker-Changer/")
+                linkUrlHome!!.httpGet().header("User-Agent" to "Walltaker-Changer/$versio")
                     .responseString { _, response, result ->
                         if (response.statusCode == 200) {
                             val gson = GsonBuilder().create()

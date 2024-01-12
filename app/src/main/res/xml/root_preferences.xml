@@ -50,7 +50,7 @@
             app:title="Fit Homescreen"/>
         <SwitchPreferenceCompat
             app:key="download1"
-            app:title="Download " />
+            app:title="Download" />
         <EditTextPreference
             app:key="IdLock"
             app:title="Lockscreen Link Id"

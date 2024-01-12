@@ -103,7 +103,7 @@ class Updater {
                                             if (notifi && !live_set_by.isNullOrEmpty()) {
                                                 notifier(context)
                                             }
-                                            if (sharedPreferences.getBoolean("download", false)) {
+                                            if (sharedPreferences.getBoolean("download1", false)) {
                                                 downloadFile(
                                                     post_url
                                                 )
