@@ -108,6 +108,7 @@ var iFitLive = false
 var clos = false
 var panicHome = ""
 var panicLock = ""
+var phone= false
 var notifi = false
 var liveUrl: String? = null
 var live_set_by: String? = null

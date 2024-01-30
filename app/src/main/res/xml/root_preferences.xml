@@ -17,6 +17,9 @@
             app:key="lockscreen"
             app:title="@string/lockscreen" />
         <SwitchPreferenceCompat
+            app:key="phone"
+            app:title="Phone mode" />
+        <SwitchPreferenceCompat
             app:key="liveS"
             app:title="Live wallpaper"/>
         <SwitchPreferenceCompat

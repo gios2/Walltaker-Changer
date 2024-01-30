@@ -51,6 +51,7 @@ class Updater {
             iFitL = sharedPreferences.getBoolean("iFitL", false)
             iFitLive = sharedPreferences.getBoolean("iFitLive", false)
             notifi = sharedPreferences.getBoolean("notifi", false)
+            phone = sharedPreferences.getBoolean("phone", false)
 
             if (livS) {
                 linkId = sharedPreferences.getString("id", "0")
@@ -147,20 +148,28 @@ class Updater {
                                                     bitmap = withContext(Dispatchers.IO) {
                                                         futureTarget.get()
                                                     }
-                                                    if (iFitH) {
-                                                        bitmap =
+                                                    val oriz: Boolean =
+                                                        bitmap.width >= bitmap.height
+
+                                                    if (phone && oriz) {
+                                                        bitmap = bitmapRotator(
+                                                            bitmap
+                                                        )
+                                                    }
+                                                    bitmap =
+                                                        if (iFitH) {
                                                             bitmapResizer(
                                                                 bitmap,
                                                                 height,
                                                                 width,
                                                             )
-                                                    } else {
-                                                        returnBitmap(
-                                                            bitmap,
-                                                            width,
-                                                            height
-                                                        )
-                                                    }
+                                                        } else {
+                                                            returnBitmap(
+                                                                bitmap,
+                                                                width,
+                                                                height
+                                                            )
+                                                        }
                                                     Glide.with(context).clear(futureTarget)
                                                 }
                                                 job.join()
@@ -231,19 +240,26 @@ class Updater {
                                                 bitmap = withContext(Dispatchers.IO) {
                                                     futureTarget.get()
                                                 }
-                                                bitmap = if (iFitL) {
-                                                    bitmapResizer(
-                                                        bitmap,
-                                                        height,
-                                                        width,
-                                                    )
-                                                } else {
-                                                    returnBitmap(
-                                                        bitmap,
-                                                        width,
-                                                        height
+                                                val oriz: Boolean = bitmap.width >= bitmap.height
+                                                if (phone && oriz) {
+                                                    bitmap = bitmapRotator(
+                                                        bitmap
                                                     )
                                                 }
+                                                bitmap =
+                                                    if (iFitL) {
+                                                        bitmapResizer(
+                                                            bitmap,
+                                                            height,
+                                                            width,
+                                                        )
+                                                    } else {
+                                                        returnBitmap(
+                                                            bitmap,
+                                                            width,
+                                                            height
+                                                        )
+                                                    }
                                                 Glide.with(context).clear(futureTarget)
                                             }
                                             job.join()
@@ -322,20 +338,27 @@ class Updater {
                                                 bitmap = withContext(Dispatchers.IO) {
                                                     futureTarget.get()
                                                 }
-                                                bitmap = if (iFit) {
-                                                    bitmapResizer(
-                                                        bitmap,
-                                                        height,
-                                                        width,
-                                                    )
-                                                } else {
-                                                    returnBitmap(
-                                                        bitmap,
-                                                        width,
-                                                        height
+
+                                                val oriz: Boolean = bitmap.width >= bitmap.height
+                                                if (phone && oriz) {
+                                                    bitmap = bitmapRotator(
+                                                        bitmap
                                                     )
                                                 }
-
+                                                bitmap =
+                                                    if (iFit) {
+                                                        bitmapResizer(
+                                                            bitmap,
+                                                            height,
+                                                            width,
+                                                        )
+                                                    } else {
+                                                        returnBitmap(
+                                                            bitmap,
+                                                            width,
+                                                            height
+                                                        )
+                                                    }
                                             }
 
                                             job.join()
@@ -381,6 +404,7 @@ class Updater {
                     }
             }
         }
+
 
         private fun notifier(context: Context) {
             val notificationManager =
@@ -454,6 +478,15 @@ class Updater {
             canvas.drawBitmap(bitmap, left, top, null)
             return resizedBitmap
 
+        }
+
+        private fun bitmapRotator(bitmap: Bitmap?): Bitmap {
+            val bOutput: Bitmap
+            val degrees = 90f
+            val matrix = Matrix()
+            matrix.setRotate(degrees)
+            bOutput = Bitmap.createBitmap(bitmap!!, 0, 0, bitmap.width, bitmap.height, matrix, true)
+            return bOutput
         }
 
         private fun returnBitmap(targetBmp: Bitmap, height: Int, width: Int): Bitmap {

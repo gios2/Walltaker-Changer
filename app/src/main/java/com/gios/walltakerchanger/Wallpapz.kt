@@ -15,7 +15,8 @@ import kotlin.system.exitProcess
 
 
 class Wallpapz : WallpaperService() {
-
+    //insert angry dog sounds
+    //Only edit something here if you really know what you're doing
 
     override fun onCreateEngine(): Engine {
         return WallpaperEngine()
