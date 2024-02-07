@@ -41,6 +41,7 @@ class Updater {
             val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
             wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "WalltakerChanger:WAKEUP")
             wl.acquire(10 * 60 * 1000L /*10 minutes*/)
+
             val sharedPreferences: SharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(context)
             multiMode = sharedPreferences.getBoolean("multimode", false)
@@ -101,9 +102,6 @@ class Updater {
 
                                     if (liveUrl != post_url) {
                                         if (!post_url.isNullOrEmpty()) {
-                                            if (notifi && !live_set_by.isNullOrEmpty()) {
-                                                notifier(context)
-                                            }
                                             if (sharedPreferences.getBoolean("download1", false)) {
                                                 downloadFile(
                                                     post_url
@@ -405,67 +403,74 @@ class Updater {
             }
         }
 
-
         private fun notifier(context: Context) {
-            val notificationManager =
-                context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            "https://e621.net".httpGet()
+                .header("User-Agent" to "Walltaker-Changer/")
+                .responseString { _, response, _ ->
+                    val reachable = response.statusCode == 200
 
-            val id = "walltaker_changer"
+                    if (reachable) {
+                        val notificationManager =
+                            context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val channel = NotificationChannel(
-                    id,
-                    "Walltaker Changer notification",
-                    NotificationManager.IMPORTANCE_DEFAULT
-                )
-                notificationManager.createNotificationChannel(channel)
-            }
+                        val id = "walltaker_changer"
 
-            val builder: NotificationCompat.Builder =
-                NotificationCompat.Builder(context, id)
-                    .setSmallIcon(R.mipmap.ic_launcher_foreground)
-                    .setContentTitle("Setting Wallpaper")
-                    .setContentText(
-                        ((if (multiMode) {
-                            if (livM) {
-                                if (live_set_by.isNullOrEmpty() && !set_by_lock.isNullOrEmpty()) {
-                                    "Live wallpaper set by an anonymous user | Lockscreen set by $set_by_lock"
-                                } else if (!live_set_by.isNullOrEmpty() && set_by_lock.isNullOrEmpty()) {
-                                    "Live wallpaper set by $live_set_by | Lockscreen set by an anonymous user"
-                                } else if (live_set_by.isNullOrEmpty() && set_by_lock.isNullOrEmpty()) {
-                                    "Live wallpaper set by an anonymous user | Lockscreen set by an anonymous user"
-                                } else {
-                                    "Live wallpaper set by $live_set_by | Lockscreen set by $set_by_lock"
-                                }
-                            } else {
-                                if (set_by_home.isNullOrEmpty() && !set_by_lock.isNullOrEmpty()) {
-                                    "Live wallpaper set by an anonymous user | Lockscreen set by $set_by_lock"
-                                } else if (!set_by_home.isNullOrEmpty() && set_by_lock.isNullOrEmpty()) {
-                                    "Live wallpaper set by $live_set_by | Lockscreen set by an anonymous user"
-                                } else if (set_by_home.isNullOrEmpty() && set_by_lock.isNullOrEmpty()) {
-                                    "Live wallpaper set by an anonymous user | Lockscreen set by an anonymous user"
-                                } else {
-                                    "Live wallpaper set by $set_by_home | Lockscreen set by $set_by_lock"
-                                }
-                            }
-                        } else {
-                            if (livS) {
-                                if (live_set_by.isNullOrEmpty()) {
-                                    "Wallpaper set by an anonymous user"
-                                } else {
-                                    "Wallpaper set by $live_set_by"
-                                }
-                            } else {
-                                if (set_by.isNullOrEmpty()) {
-                                    "Wallpaper set by an anonymous user"
-                                } else {
-                                    "Wallpaper set by $set_by"
-                                }
-                            }
-                        }).toString())
-                    )
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            notificationManager.notify(0, builder.build())
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            val channel = NotificationChannel(
+                                id,
+                                "Walltaker Changer notification",
+                                NotificationManager.IMPORTANCE_DEFAULT
+                            )
+                            notificationManager.createNotificationChannel(channel)
+                        }
+
+                        val builder: NotificationCompat.Builder =
+                            NotificationCompat.Builder(context, id)
+                                .setSmallIcon(R.mipmap.ic_launcher_foreground)
+                                .setContentTitle("Setting Wallpaper")
+                                .setContentText(
+                                    ((if (multiMode) {
+                                        if (livM) {
+                                            if (live_set_by.isNullOrEmpty() && !set_by_lock.isNullOrEmpty()) {
+                                                "Live wallpaper set by an anonymous user | Lockscreen set by $set_by_lock"
+                                            } else if (!live_set_by.isNullOrEmpty() && set_by_lock.isNullOrEmpty()) {
+                                                "Live wallpaper set by $live_set_by | Lockscreen set by an anonymous user"
+                                            } else if (live_set_by.isNullOrEmpty() && set_by_lock.isNullOrEmpty()) {
+                                                "Live wallpaper set by an anonymous user | Lockscreen set by an anonymous user"
+                                            } else {
+                                                "Live wallpaper set by $live_set_by | Lockscreen set by $set_by_lock"
+                                            }
+                                        } else {
+                                            if (set_by_home.isNullOrEmpty() && !set_by_lock.isNullOrEmpty()) {
+                                                "Live wallpaper set by an anonymous user | Lockscreen set by $set_by_lock"
+                                            } else if (!set_by_home.isNullOrEmpty() && set_by_lock.isNullOrEmpty()) {
+                                                "Live wallpaper set by $live_set_by | Lockscreen set by an anonymous user"
+                                            } else if (set_by_home.isNullOrEmpty() && set_by_lock.isNullOrEmpty()) {
+                                                "Live wallpaper set by an anonymous user | Lockscreen set by an anonymous user"
+                                            } else {
+                                                "Live wallpaper set by $set_by_home | Lockscreen set by $set_by_lock"
+                                            }
+                                        }
+                                    } else {
+                                        if (livS) {
+                                            if (live_set_by.isNullOrEmpty()) {
+                                                "Wallpaper set by an anonymous user"
+                                            } else {
+                                                "Wallpaper set by $live_set_by"
+                                            }
+                                        } else {
+                                            if (set_by.isNullOrEmpty()) {
+                                                "Wallpaper set by an anonymous user"
+                                            } else {
+                                                "Wallpaper set by $set_by"
+                                            }
+                                        }
+                                    }).toString())
+                                )
+                                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        notificationManager.notify(0, builder.build())
+                    }
+                }
         }
 
         private fun bitmapResizer(bitmap: Bitmap, targetHeight: Int, targetWidth: Int): Bitmap {

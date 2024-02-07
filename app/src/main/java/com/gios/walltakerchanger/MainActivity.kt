@@ -108,7 +108,7 @@ var iFitLive = false
 var clos = false
 var panicHome = ""
 var panicLock = ""
-var phone= false
+var phone = false
 var notifi = false
 var liveUrl: String? = null
 var live_set_by: String? = null
@@ -191,7 +191,6 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun obtainWallpaper() {
-
 
         val sharedPreferences: SharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(this)
