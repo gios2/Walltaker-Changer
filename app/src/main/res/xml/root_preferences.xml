@@ -4,6 +4,10 @@
         <SwitchPreferenceCompat
             app:key="notifi"
             app:title="Show notifications?" />
+            <EditTextPreference
+                app:key="timeCheck"
+                app:title="Timer to check the links in seconds"
+                app:defaultValue="10"/>
         <PreferenceCategory app:title="Single mode">
             <EditTextPreference
                 app:key="id"

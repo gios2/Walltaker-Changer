@@ -114,6 +114,8 @@ var liveUrl: String? = null
 var live_set_by: String? = null
 var versio: String = "0"
 
+var timeCheckT: Int = 10
+
 class MainActivity : AppCompatActivity() {
 
 

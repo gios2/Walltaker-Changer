@@ -6,6 +6,8 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
 
 
 class BroadcastReceiver : BroadcastReceiver() {
@@ -24,9 +26,16 @@ class BroadcastReceiver : BroadcastReceiver() {
             PendingIntent.FLAG_IMMUTABLE
         )
 
+        val sharedPreferences: SharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(context)
+        timeCheckT = sharedPreferences.getString("timeCheck", "10")!!.toInt()
+        timeCheckT *= 1000
+        if (timeCheckT < 10000) {
+            timeCheckT += 10000
+        }
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
-            System.currentTimeMillis() + 10000,
+            System.currentTimeMillis() + timeCheckT,
             pendingIntent
         )
     }
