@@ -14,9 +14,13 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.net.ConnectivityManager.*
 import android.net.Uri
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.Environment
+import android.os.Handler
+import android.os.Looper
+import android.os.PowerManager
 import android.os.PowerManager.WakeLock
 import android.provider.Settings
 import android.text.Html
@@ -24,7 +28,10 @@ import android.text.method.ScrollingMovementMethod
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -166,6 +173,7 @@ class MainActivity : AppCompatActivity() {
         versio = this.packageManager.getPackageInfo(this.packageName, 0).versionName
     }
 
+    @SuppressLint("SetTextI18n")
     private fun reset() {
         if (multiMode) {
             imageHome.visibility = View.GONE
