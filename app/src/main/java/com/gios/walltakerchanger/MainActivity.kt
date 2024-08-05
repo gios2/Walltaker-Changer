@@ -495,9 +495,9 @@ class MainActivity : AppCompatActivity() {
         livS = sharedPreferences.getBoolean("liveS", false)
         livM = sharedPreferences.getBoolean("liveM", false)
         if (!multiMode && (linkId == "0" || linkId.isNullOrEmpty()) ) {
-            Toast.makeText(this, "Set a id", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Set an id", Toast.LENGTH_SHORT).show()
         } else if (multiMode && (linkIdHome == "0" || linkIdLock == "0" || linkIdHome.isNullOrEmpty() || linkIdHome.isNullOrEmpty())) {
-            Toast.makeText(this, "Set a id for multi mode", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Set an id for multi mode", Toast.LENGTH_SHORT).show()
         } else if (livS || livM) {
             Toast.makeText(this, "Starting Walltaker Changer...", Toast.LENGTH_SHORT).show()
 
