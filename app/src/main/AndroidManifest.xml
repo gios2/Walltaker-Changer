@@ -15,11 +15,11 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage"></uses-permission>
+        tools:ignore="ScopedStorage" />
 
     <uses-feature
         android:name="android.software.live_wallpaper"
-        android:required="true"></uses-feature>
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -91,7 +91,7 @@
             android:permission="TODO"
             tools:ignore="ExportedReceiver">
             <intent-filter>
-                <action android:name=".BroadcastReceiver"></action>
+                <action android:name=".BroadcastReceiver" />
             </intent-filter>
         </receiver>
     </application>
