@@ -102,6 +102,9 @@ class Updater {
 
                                     if (liveUrl != post_url) {
                                         if (!post_url.isNullOrEmpty()) {
+                                            if (notifi) {
+                                                notifier(context)
+                                            }
                                             if (sharedPreferences.getBoolean("download1", false)) {
                                                 downloadFile(
                                                     post_url

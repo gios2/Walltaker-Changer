@@ -3,71 +3,89 @@
     <PreferenceCategory app:title="@string/set_your_id_and_choose_where_to_show_the_wallpaper">
         <SwitchPreferenceCompat
             app:key="notifi"
-            app:title="Show notifications?" />
+            app:title="Notifications"
+            app:summary="show notification when a new wallpaper is set"/>
             <EditTextPreference
                 app:key="timeCheck"
-                app:title="Timer to check the links in seconds"
+                app:title="Check time"
+                app:summary="Timer to check the links in seconds"
                 app:defaultValue="10"/>
         <PreferenceCategory app:title="Single mode">
             <EditTextPreference
                 app:key="id"
-                app:title="@string/id"
+                app:title="Link id"
                 app:useSimpleSummaryProvider="true" />
         </PreferenceCategory>
         <SwitchPreferenceCompat
             app:key="wallpaper"
+            app:summary="Allows the image to be set as homescreen"
             app:title="Homescreen" />
         <SwitchPreferenceCompat
-            app:key="lockscreen"
-            app:title="@string/lockscreen" />
+            app:key="Lockscreen"
+            app:summary="Allows the image to be set as lockscreen"
+            app:title="lockscreen" />
         <SwitchPreferenceCompat
             app:key="phone"
-            app:title="Phone mode" />
+            app:title="Phone mode"
+            app:summary="Image gets rotated if too large for the screen"
+            />
+        <SwitchPreferenceCompat
+            app:key="iFit"
+            app:summary="Zooms out the image so it can all be seen"
+            app:title="Fit wallpaper"/>
         <SwitchPreferenceCompat
             app:key="liveS"
+            app:summary="Allows gifs to be set"
             app:title="Live wallpaper"/>
         <SwitchPreferenceCompat
             app:key="iFitLive"
-            app:title="Fit Live Wallpaper"/>
-        <SwitchPreferenceCompat
-            app:key="iFit"
-            app:title="Fit"/>
+            app:summary="Zooms out the image on the live wallaper so it can all be seen"
+            app:title="Fit live wallpaper"/>
         <SwitchPreferenceCompat
             app:key="download"
-            app:title="Download" />
+            app:summary="The image gets downloaded in your local storage (wt changer folder)"
+            app:title="Download image" />
 
     </PreferenceCategory>
 
     <PreferenceCategory app:title="Multi mode">
         <SwitchPreferenceCompat
             app:key="multimode"
+            app:summary="Allow to use two links at the same time"
             app:title="Enable multi mode" />
         <EditTextPreference
             app:key="IdHome"
-            app:title="Homescreen Link Id"
+            app:title="Homescreen link id"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreferenceCompat
+            app:key="iFitH"
+            app:summary="Zooms out the image of the homescreen wallaper so it can all be seen"
+            app:title="Fit homescreen"/>
+        <SwitchPreferenceCompat
             app:key="liveM"
+            app:summary="Allows gifs to be set"
             app:title="Live wallpaper" />
         <SwitchPreferenceCompat
             app:key="iFitLive"
-            app:title="Fit Live Wallpaper"/>
-        <SwitchPreferenceCompat
-            app:key="iFitH"
-            app:title="Fit Homescreen"/>
+            app:summary="Zooms out the image on the live wallaper so it can all be seen"
+            app:title="Fit live Wallpaper"/>
         <SwitchPreferenceCompat
             app:key="download1"
-            app:title="Download" />
+            app:summary="The homescreen/ live wallpaper image gets downloaded in your local storage (wt changer folder)"
+            app:title="Download homescreen/ live wallpaper image" />
         <EditTextPreference
             app:key="IdLock"
-            app:title="Lockscreen Link Id"
+            app:title="Lockscreen link id"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreferenceCompat
             app:key="iFitL"
-            app:title="Fit Lockscreen"/>
+            app:summary="Zooms out the image of the lockscreen wallaper so it can all be seen"
+            app:title="Fit lockscreen"/>
         <SwitchPreferenceCompat
             app:key="download2"
-            app:title="Download" />
+            app:summary="The lockscreen image gets downloaded in your local storage (wt changer folder)"
+            app:title="Download lockscreen image" />
+
     </PreferenceCategory>
     <PreferenceCategory app:title="Panic images">
         <EditTextPreference
