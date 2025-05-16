@@ -37,7 +37,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.bumptech.glide.Glide
-import com.dcastalia.localappupdate.DownloadApk
 import com.github.kittinunf.fuel.httpGet
 import com.google.gson.GsonBuilder
 import java.util.Timer
@@ -551,14 +550,6 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_settings -> {
                 settings()
-                true
-            }
-
-            R.id.action_upApp -> {
-                val url =
-                    "https://github.com/gios2/Walltaker-Changer/raw/main/app/release/app-release.apk"
-                val downloadApk = DownloadApk(this@MainActivity)
-                downloadApk.startDownloadingApk(url)
                 true
             }
 
